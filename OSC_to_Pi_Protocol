@@ -1,0 +1,68 @@
+Need message types and formats for each of the different signals we are receiving from vezer. Need to decide on addresses, and the full scope of each 
+
+OSC supports:
+-OSC Values (continuous):
+	{ address: '/valueTrack', args: [ { type: 'float', value: 0.5852534770965576 } ],oscType: 'message' } 
+-OSC flag (boolean):
+
+-OSC color (RGB): 
+{ 	address: '/ colorTrack', 
+	args: [ { type: 'integer', value: 172 }, 
+	{ type: 'integer', value: 100 }, 
+	{ type: 'integer', value: 150 } ], 
+	oscType: 'message' }
+
+
+Lights
+Desired Controls:
+	-Color
+	-Specific petal/pistil
+Message Type: Color 
+
+Message format:
+
+`address` determines which rod and the effect controlled.
+	-"/light/petal/color/all"
+	-"/light/petal/color/1"
+	-"/light/petal/color/2"
+	-"/light/petal/color/3"
+	-"/light/petal/color/4"
+	-"/light/petal/color/5"
+	-"/light/petal/color/6"
+	-"/light/petal/color/7"
+	-"/light/petal/color/8"
+	-"/light/pistals/color/all"
+	-"/light/pistals/color/1"
+	-"/light/pistals/color/2"
+	-"/light/pistals/color/3"
+	-"/light/flower/color/all"
+
+`args`
+three integer values corresponding to R, G, B.
+	args: [ 
+	{ type: 'integer', value: 172 }, 
+	{ type: 'integer', value: 100 }, 
+	{ type: 'integer', value: 150 }
+	]
+
+Desired visual behaviors:
+	-Strobe
+	-"Dance/flicker around"
+	-Pass continuous colors
+	-"Color wheel"/continuous alternating rainbow
+
+
+Motor
+Desired Controls:
+	-Target position
+
+Message format:
+	Need to map position from a scale of 0-1 to the maximum bloom position in the motor (within safety tolerance). To prevent constantly updating motor, be sure to truncate the float to a certain sensitivity (~3 decimal places), compare against last value, and only update when changed.
+
+`address` signifies that it's the motor
+	-"/bloom/position"
+
+`args`
+just a value between 0 and 1
+
+args: [ { type: 'float', value: 0.5852534770965576 } ]
