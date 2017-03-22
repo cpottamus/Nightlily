@@ -31,10 +31,10 @@ Message format:
 	-"/light/petal/color/6"
 	-"/light/petal/color/7"
 	-"/light/petal/color/8"
-	-"/light/pistals/color/all"
-	-"/light/pistals/color/1"
-	-"/light/pistals/color/2"
-	-"/light/pistals/color/3"
+	-"/light/pistil/color/all"
+	-"/light/pistil/color/1"
+	-"/light/pistil/color/2"
+	-"/light/pistil/color/3"
 	-"/light/flower/color/all"
 
 `args`
