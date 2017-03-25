@@ -45,9 +45,6 @@ void loop() {
       // read the incoming byte:
       incomingByte = Serial.read();
 
-      // say what you got:
-      Serial.println(incomingByte, DEC);
-
       bloomTarget = incomingByte;
       
     }
