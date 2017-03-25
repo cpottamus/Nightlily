@@ -46,7 +46,6 @@ void loop() {
       incomingByte = Serial.read();
 
       // say what you got:
-      Serial.print("Arduino received: ");
       Serial.println(incomingByte, DEC);
 
       bloomTarget = incomingByte;
@@ -54,7 +53,6 @@ void loop() {
     }
 
     delay(4000);
-    Serial.println("Cow");
   
   while (stepper.currentPosition() != bloomTarget){
     //osc listener goes here

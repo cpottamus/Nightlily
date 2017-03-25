@@ -21,7 +21,7 @@ motorPort.on("open", function () {
     console.log('Pi received: ' + data);
 
     if ( data == 2000) {
-      console.log('Pi received ready signal, Arduino Ready')
+      console.log('Pi received ready signal, Arduino Ready');
       readySignal = 2000;
     }
   });
@@ -30,7 +30,7 @@ motorPort.on("open", function () {
   if ( readySignal == 2000) {
     //May need to consider buffer
     //motorPort.write(new Buffer('4','utf-8'));
-    
+    console.log('Sending to arduino');
     motorPort.write(6798);
 
     }
