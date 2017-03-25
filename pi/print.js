@@ -9,6 +9,19 @@ var serialPort = new SerialPort("/dev/ttyACM0", {
   baudrate: 9600
 });
 
+serialPort.on("open", function () {
+  console.log('open');
+
+  serialPort.on('data', function(data) {
+    console.log('data received: ' + data);
+  });
+
+  serialPort.write(new Buffer('4','ascii'), function(err, results) {
+    console.log('err ' + err);
+    console.log('results ' + results);
+  });
+});
+
 
 // listen for OSC messages and print them to the console
 var udp = dgram.createSocket('udp4', function(msg, rinfo) {

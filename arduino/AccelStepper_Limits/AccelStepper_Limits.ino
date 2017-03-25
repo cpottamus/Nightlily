@@ -10,6 +10,7 @@ int topLimitPin = 2;             //set pin for top limit switch
 int bottomLimitPin = 3;          //set pin for bottom limit switch
 int bloomSpeed = feet;
 int safetyLimit = -100;
+int incomingByte = 0;           //for incoming serial data
 
 
 void setup() {
@@ -42,7 +43,10 @@ void loop() {
       Serial.print("I received: ");
       Serial.println(incomingByte, DEC);
       delay(2000);
-  }
+    }
+
+    delay(4000);
+    Serial.println("Cow");
   /*
   do
   {
