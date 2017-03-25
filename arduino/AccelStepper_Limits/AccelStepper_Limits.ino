@@ -5,7 +5,7 @@ int feet = 1524;                    //define number of steps per 1' increase in 
 AccelStepper stepper(1, 9, 13);   //configure AccelStepper library
 int setEnablePin = 8;             //set the enable pin
 int fullBloom =   7420;        //definie full bloom position
-int bloomTarget = 2*feet;        //set initial bloom target position
+int bloomTarget = 0;        //set initial bloom target position
 int topLimitPin = 2;             //set pin for top limit switch
 int bottomLimitPin = 3;          //set pin for bottom limit switch
 int bloomSpeed = feet;
@@ -18,7 +18,7 @@ int newTarget = 0;              //for incoming serial data
 void setup() {
 
   //Testing serial setup
-  Serial.begin(9600);
+  Serial.begin(115200);
   delay(2000);
   // Send ready signal.
   Serial.print(2000);
@@ -46,11 +46,13 @@ void loop() {
   if(Serial.available()>0){
       // read the incoming byte:
       newTarget = Serial.parseInt();
+      Serial.print(newTarget);
 
 
  
       if(stepper.currentPosition() == bloomTarget) {
         bloomTarget = newTarget;
+        stepper.moveTo(bloomTarget);
       }
       
   }
@@ -62,8 +64,6 @@ void loop() {
     
     //stepper.setMaxSpeed(bloomSpeed);
     //stepper.setAcceleration(bloomSpeed*2);
-    stepper.moveTo(bloomTarget);
-    stepper.enableOutputs();
     stepper.run();
   }
 
