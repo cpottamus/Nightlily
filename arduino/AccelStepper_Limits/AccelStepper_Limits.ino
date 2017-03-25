@@ -45,13 +45,10 @@ void loop() {
   //If data received
   if(Serial.available()>0){
       // read the incoming byte:
-      incomingByte = Serial.read();
+      newTarget = Serial.parseInt();
 
-      newTarget = incomingByte;
-      Serial.print('read');
-      Serial.print(incomingByte);
-      Serial.print('---');
 
+ 
       if(stepper.currentPosition() == bloomTarget) {
         bloomTarget = newTarget;
       }
@@ -70,7 +67,7 @@ void loop() {
     stepper.run();
   }
 
-  stepper.disableOutputs();
+  //stepper.disableOutputs();
 }
 
 

@@ -12,8 +12,7 @@ var pad = "0000";
 // Set up serial for motor.
 var SerialPort = require("serialport");
 var motorPort = new SerialPort("/dev/ttyACM0", {
-  baudrate: 9600,
-  parser: SerialPort.parsers.byteLength(4)
+  baudrate: 9600
 });
 
 //Arduino "ready" state
