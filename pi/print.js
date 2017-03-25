@@ -28,6 +28,7 @@ motorPort.on("open", function () {
 
   //If ready, enable sending to arduino.
   if ( readySignal == 2000) {
+    //May need to consider buffer
     //motorPort.write(new Buffer('4','utf-8'));
     
     motorPort.write(6798);
@@ -35,8 +36,6 @@ motorPort.on("open", function () {
     }
       //Send OSC Commands here.
       //Call Function to interpret the 0,1 OSC feedback and then pass here.
-
-  }
 });
 
 
