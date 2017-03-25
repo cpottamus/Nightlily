@@ -12,6 +12,7 @@ int bloomSpeed = feet;
 int maxAcceleration = 7420;
 int safetyLimit = -100;
 int incomingByte = 0;           //for incoming serial data
+int newTarget = 0;              //for incoming serial data
 
 
 void setup() {
@@ -46,7 +47,11 @@ void loop() {
       // read the incoming byte:
       incomingByte = Serial.read();
 
-      bloomTarget = incomingByte;
+      newTarget = incomingByte;
+
+      if(stepper.currentPosition() == bloomTarget) {
+        bloomTarget = newTarget;
+      }
       
   }
   
