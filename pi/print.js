@@ -6,6 +6,7 @@ var osc = require('osc-min'),
 //instantiate msg object & parameters
 var oscMsg = {};
 var motorPositionValue = 0;
+var oldMotorPositionValue = 0;
 
 // Set up serial for motor.
 var SerialPort = require("serialport");
@@ -44,8 +45,11 @@ motorPort.on("open", function () {
 
 function moveMotor(position) {
   if(readySignal = 2000) {
-    console.log('Sending to arduino');
-    motorPort.write(position);
+    if (Math.abs(motorPositionValue - oldMotorPositionValue) > 50){
+      console.log('Sending to arduino ' + position);
+      motorPort.write(position);
+      oldMotorPositionValue = motorPositionValue
+    }
   }
 }
 
@@ -64,6 +68,7 @@ var udp = dgram.createSocket('udp4', function(msg, rinfo) {
 
     if (oscMsg.address == '/bloom/position') {
       motorPositionValue = Math.trunc(oscMsg.args[0].value * 7420);
+      console.log(motorPositionValue);
       moveMotor(motorPositionValue);
     }
 
