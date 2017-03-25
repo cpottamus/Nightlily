@@ -7,6 +7,7 @@ var osc = require('osc-min'),
 var oscMsg = {};
 var motorPositionValue = 0;
 var oldMotorPositionValue = 0;
+var motorPositionDifference = 400;
 
 // Set up serial for motor.
 var SerialPort = require("serialport");
@@ -45,9 +46,10 @@ motorPort.on("open", function () {
 
 function moveMotor(position) {
   if(readySignal = 2000) {
-    if (Math.abs(motorPositionValue - oldMotorPositionValue) > 400){
+    //bottleneck commands, only send when step difference is exceeded. 
+    if (Math.abs(motorPositionValue - oldMotorPositionValue) > motorPositionDifference){
       console.log('Sending to arduino ' + position);
-      motorPort.write(position);
+      motorPort.write(position+",");
       oldMotorPositionValue = motorPositionValue
     }
   }
@@ -67,7 +69,7 @@ var udp = dgram.createSocket('udp4', function(msg, rinfo) {
     //HERE IS WHERE YOU CALL FUNCTIONS TO INTERPRET MESSAGE
 
     if (oscMsg.address == '/bloom/position') {
-      motorPositionValue = oscMsg.args[0].value + ",";
+      motorPositionValue = oscMsg.args[0].value;
       moveMotor(motorPositionValue);
     }
 
