@@ -20,7 +20,7 @@ motorPort.on("open", function () {
   motorPort.on('data', function(data) {
     console.log('Pi received: ' + data);
 
-    if ( int(data) == 2000) {
+    if ( data == 2000) {
       console.log('Pi received ready signal, Arduino Ready')
       readySignal = 2000;
     }
