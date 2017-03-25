@@ -60,7 +60,7 @@ var udp = dgram.createSocket('udp4', function(msg, rinfo) {
   remote = rinfo.address;
 
   try {
-    console.log(osc.fromBuffer(msg));
+    //console.log(osc.fromBuffer(msg));
 
     oscMsg = osc.fromBuffer(msg);
 
