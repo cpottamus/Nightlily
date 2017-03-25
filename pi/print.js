@@ -11,7 +11,7 @@ var motorPort = new SerialPort("/dev/ttyACM0", {
 });
 
 //Arduino "ready" state
-var readySignal = 2000;
+var readySignal = 0000;
 
 motorPort.on("open", function () {
   console.log('open');
