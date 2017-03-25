@@ -8,6 +8,7 @@ var oscMsg = {};
 var motorPositionValue = 0;
 var oldMotorPositionValue = 0;
 var motorPositionDifference = 400;
+var temp = "";
 
 // Set up serial for motor.
 var SerialPort = require("serialport");
@@ -48,9 +49,10 @@ function moveMotor(position) {
   if(readySignal = 2000) {
     //bottleneck commands, only send when step difference is exceeded. 
     if (Math.abs(motorPositionValue - oldMotorPositionValue) > motorPositionDifference){
-      console.log('Sending to arduino ' + position);
-      motorPort.write(position+",");
-      oldMotorPositionValue = motorPositionValue
+      temp = position + ",";
+      console.log('Sending to arduino ::: ' + temp);
+      motorPort.write(temp);
+      oldMotorPositionValue = motorPositionValue;
     }
   }
 }
@@ -70,6 +72,7 @@ var udp = dgram.createSocket('udp4', function(msg, rinfo) {
 
     if (oscMsg.address == '/bloom/position') {
       motorPositionValue = oscMsg.args[0].value;
+      console.log("The motorPositionValue from vezer is :: " + motorPositionValue);
       moveMotor(motorPositionValue);
     }
 
