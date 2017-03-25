@@ -7,12 +7,12 @@ var osc = require('osc-min'),
 var oscMsg = {};
 var motorPositionValue = 0;
 var oldMotorPositionValue = 0;
-var pad = "0000";
 
 // Set up serial for motor.
 var SerialPort = require("serialport");
 var motorPort = new SerialPort("/dev/ttyACM0", {
-  baudrate: 9600
+  baudrate: 9600,
+
 });
 
 //Arduino "ready" state
@@ -67,10 +67,7 @@ var udp = dgram.createSocket('udp4', function(msg, rinfo) {
     //HERE IS WHERE YOU CALL FUNCTIONS TO INTERPRET MESSAGE
 
     if (oscMsg.address == '/bloom/position') {
-      motorPositionValue = oscMsg.args[0].value * 7420
-      motorPositionValue = motorPositionValue.toString().match('[0-9]+')[0].substring(0,4);
-      motorPositionValue = pad.substring(0, pad.length - motorPositionValue.length) + motorPositionValue;
-
+      motorPositionValue = oscMsg.args[0].value + ",";
       moveMotor(motorPositionValue);
     }
 
