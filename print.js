@@ -1,14 +1,6 @@
-// Set up OSC
 var osc = require('osc-min'),
     dgram = require('dgram'),
     remote;
-
-// Set up serial
-var SerialPort = require("serialport").SerialPort;
-var serialPort = new SerialPort("/dev/ttyACM0", {
-  baudrate: 9600
-});
-
 
 // listen for OSC messages and print them to the console
 var udp = dgram.createSocket('udp4', function(msg, rinfo) {

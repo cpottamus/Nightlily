@@ -14,6 +14,9 @@ int safetyLimit = -100;
 
 void setup() {
 
+  //Testing serial setup
+  Serial.begin(9600);
+  /*
   stepper.setMaxSpeed(.5*bloomSpeed);
   stepper.setAcceleration(bloomSpeed);
   stepper.setMinPulseWidth(25);
@@ -24,11 +27,23 @@ void setup() {
   stepper.runToNewPosition(fullBloom*1.5);    //run the stepper out until you hit the limit
   delay(1000);
   stepper.runToNewPosition(0);    //return the stepper to fully retracted
-  delay(1000);
+  delay(1000);*/
 } 
 
 void loop() {
 
+
+  //Testing stuff.
+  if(Serial.available()>0){
+      // read the incoming byte:
+      incomingByte = Serial.read();
+
+      // say what you got:
+      Serial.print("I received: ");
+      Serial.println(incomingByte, DEC);
+      delay(2000);
+  }
+  /*
   do
   {
     //osc listener goes here
@@ -48,7 +63,7 @@ void loop() {
 
   stepper.disableOutputs();
   bloomTarget = 50;
-  
+  */
 }
 
 
