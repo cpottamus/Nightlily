@@ -48,6 +48,9 @@ void loop() {
       incomingByte = Serial.read();
 
       newTarget = incomingByte;
+      Serial.print('read');
+      Serial.print(incomingByte);
+      Serial.print('---');
 
       if(stepper.currentPosition() == bloomTarget) {
         bloomTarget = newTarget;
