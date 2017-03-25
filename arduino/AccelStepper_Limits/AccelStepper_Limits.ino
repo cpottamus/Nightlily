@@ -17,57 +17,58 @@ void setup() {
 
   //Testing serial setup
   Serial.begin(9600);
-  /*
+  delay(2000);
+  // Send ready signal.
+  Serial.print(2000);
+  
   stepper.setMaxSpeed(.5*bloomSpeed);
   stepper.setAcceleration(bloomSpeed);
   stepper.setMinPulseWidth(25);
 
+/*
   attachInterrupt(digitalPinToInterrupt(topLimitPin), setTopLimit, CHANGE);      //interrupt & recalibrate when the top limit is hit
   attachInterrupt(digitalPinToInterrupt(bottomLimitPin), setBottomLimit, CHANGE);   //interrupt & recalibrate bottom limit is hit
 
   stepper.runToNewPosition(fullBloom*1.5);    //run the stepper out until you hit the limit
   delay(1000);
   stepper.runToNewPosition(0);    //return the stepper to fully retracted
-  delay(1000);*/
+  delay(1000);
+*/
 } 
 
 void loop() {
 
-
-  //Testing stuff.
+   
+  
+  //If data received
   if(Serial.available()>0){
       // read the incoming byte:
       incomingByte = Serial.read();
 
       // say what you got:
-      Serial.print("I received: ");
+      Serial.print("Arduino received: ");
       Serial.println(incomingByte, DEC);
-      delay(2000);
+
+      bloomTarget = incomingByte;
+      
     }
 
     delay(4000);
     Serial.println("Cow");
-  /*
-  do
-  {
+  
+  while (stepper.currentPosition() != bloomTarget){
     //osc listener goes here
     //bloomSpeed = OSC/blooom/speed
     //bloomTarget = OSC/bloom/position
     
-    stepper.setMaxSpeed(bloomSpeed);
-    stepper.setAcceleration(bloomSpeed*2);
+    //stepper.setMaxSpeed(bloomSpeed);
+    //stepper.setAcceleration(bloomSpeed*2);
     stepper.moveTo(bloomTarget);
     stepper.enableOutputs();
     stepper.run();
-  } while (stepper.currentPosition() != bloomTarget);
-
-    //osc listener goes here
-    //bloomSpeed = OSC/blooom/speed
-    //bloomTarget = OSC/bloom/position
+  }
 
   stepper.disableOutputs();
-  bloomTarget = 50;
-  */
 }
 
 

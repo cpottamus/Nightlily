@@ -3,23 +3,40 @@ var osc = require('osc-min'),
     dgram = require('dgram'),
     remote;
 
-// Set up serial
-var SerialPort = require("serialport").SerialPort;
-var serialPort = new SerialPort("/dev/ttyACM0", {
-  baudrate: 9600
+// Set up serial for motor.
+var SerialPort = require("serialport");
+var motorPort = new SerialPort("/dev/ttyACM0", {
+  baudrate: 9600,
+  parser: SerialPort.parsers.byteLength(4)
 });
 
-serialPort.on("open", function () {
+//Arduino "ready" state
+var readySignal = 2000;
+
+motorPort.on("open", function () {
   console.log('open');
 
-  serialPort.on('data', function(data) {
-    console.log('data received: ' + data);
+  //Print out data received from motor port. Check if a signal received is '2', and enable writing to Arduino when it is.
+  motorPort.on('data', function(data) {
+    console.log('Pi received: ' + data);
+
+    if ( int(data) == 2000) {
+      console.log('Pi received ready signal, Arduino Ready')
+      readySignal = 2000;
+    }
   });
 
-  serialPort.write(new Buffer('4','ascii'), function(err, results) {
-    console.log('err ' + err);
-    console.log('results ' + results);
-  });
+  //If ready, enable sending to arduino.
+  if ( readySignal == 2000) {
+    //motorPort.write(new Buffer('4','utf-8'));
+    
+    motorPort.write(6798);
+
+    }
+      //Send OSC Commands here.
+      //Call Function to interpret the 0,1 OSC feedback and then pass here.
+
+  }
 });
 
 
