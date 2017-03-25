@@ -19,9 +19,12 @@ void setup() {
 
   //Testing serial setup
   Serial.begin(115200);
+  while(!Serial) {
+    ;
+  }
   delay(2000);
   // Send ready signal.
-  Serial.print(20000);
+  Serial.print(2000);
   
   stepper.setMaxSpeed(maxAcceleration);
   stepper.setAcceleration(maxAcceleration);

@@ -14,7 +14,7 @@ var temp = "";
 var SerialPort = require("serialport");
 var motorPort = new SerialPort("/dev/ttyACM0", {
   baudrate: 115200,
-  parser: SerialPort.parsers.byteLength(5)
+  parser: SerialPort.parsers.byteLength(4)
 
 });
 
@@ -28,9 +28,9 @@ motorPort.on("open", function () {
   motorPort.on('data', function(data) {
     console.log('Pi received: ' + data);
 
-    if ( data == 20000) {
+    if ( data == 2000) {
       console.log('Pi received ready signal, Arduino Ready');
-      readySignal = 20000;
+      readySignal = 2000;
     }
   });
 
@@ -47,7 +47,7 @@ motorPort.on("open", function () {
 });
 
 function moveMotor(position) {
-  if(readySignal = 20000) {
+  if(readySignal = 2000) {
     //bottleneck commands, only send when step difference is exceeded. 
     if (Math.abs(motorPositionValue - oldMotorPositionValue) > motorPositionDifference){
       temp = position + ",";
