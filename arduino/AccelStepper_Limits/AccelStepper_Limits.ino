@@ -9,6 +9,7 @@ int bloomTarget = 2*feet;        //set initial bloom target position
 int topLimitPin = 2;             //set pin for top limit switch
 int bottomLimitPin = 3;          //set pin for bottom limit switch
 int bloomSpeed = feet;
+int maxAcceleration = 7420;
 int safetyLimit = -100;
 int incomingByte = 0;           //for incoming serial data
 
@@ -21,8 +22,8 @@ void setup() {
   // Send ready signal.
   Serial.print(2000);
   
-  stepper.setMaxSpeed(.5*bloomSpeed);
-  stepper.setAcceleration(bloomSpeed);
+  stepper.setMaxSpeed(maxAcceleration);
+  stepper.setAcceleration(maxAcceleration);
   stepper.setMinPulseWidth(25);
 
 /*
@@ -47,9 +48,7 @@ void loop() {
 
       bloomTarget = incomingByte;
       
-    }
-
-    delay(4000);
+  }
   
   while (stepper.currentPosition() != bloomTarget){
     //osc listener goes here

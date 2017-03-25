@@ -19,7 +19,7 @@ var motorPort = new SerialPort("/dev/ttyACM0", {
 var readySignal = 0000;
 
 motorPort.on("open", function () {
-  console.log('open');
+  console.log('Motor port open');
 
   //Print out data received from motor port. Check if a signal received is '2', and enable writing to Arduino when it is.
   motorPort.on('data', function(data) {
@@ -45,7 +45,7 @@ motorPort.on("open", function () {
 
 function moveMotor(position) {
   if(readySignal = 2000) {
-    if (Math.abs(motorPositionValue - oldMotorPositionValue) > 50){
+    if (Math.abs(motorPositionValue - oldMotorPositionValue) > 400){
       console.log('Sending to arduino ' + position);
       motorPort.write(position);
       oldMotorPositionValue = motorPositionValue
@@ -68,7 +68,6 @@ var udp = dgram.createSocket('udp4', function(msg, rinfo) {
 
     if (oscMsg.address == '/bloom/position') {
       motorPositionValue = Math.trunc(oscMsg.args[0].value * 7420);
-      console.log(motorPositionValue);
       moveMotor(motorPositionValue);
     }
 
