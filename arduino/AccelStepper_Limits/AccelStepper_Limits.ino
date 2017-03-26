@@ -9,7 +9,7 @@ int bloomTarget = 0;        //set initial bloom target position
 int topLimitPin = 2;             //set pin for top limit switch
 int bottomLimitPin = 3;          //set pin for bottom limit switch
 int bloomSpeed = feet;
-int maxAcceleration = 3500;
+int maxAcceleration = 8000;
 int safetyLimit = -100;
 int incomingByte = 0;           //for incoming serial data
 int newTarget = 0;              //for incoming serial data
@@ -24,11 +24,11 @@ void setup() {
   }
   delay(2000);
   // Send ready signal.
-  Serial.print(2000);
+  Serial.println(2000);
   
   stepper.setMaxSpeed(maxAcceleration);
   stepper.setAcceleration(maxAcceleration);
-  stepper.setMinPulseWidth(25);
+//  stepper.setMinPulseWidth(25);
 
 /*
   attachInterrupt(digitalPinToInterrupt(topLimitPin), setTopLimit, CHANGE);      //interrupt & recalibrate when the top limit is hit
@@ -49,38 +49,38 @@ void loop() {
   if(Serial.available()>0){
       // read the incoming byte:
       newTarget = Serial.parseInt();
-      Serial.print(newTarget);
+      Serial.println(newTarget);
 
 
  
       if(stepper.currentPosition() == bloomTarget) {
         bloomTarget = newTarget;
-        stepper.moveTo(bloomTarget);
+        Serial.println(bloomTarget);
       }
       
   }
   
-  while (stepper.currentPosition() != bloomTarget){
+  if (stepper.currentPosition() != bloomTarget){
     //osc listener goes here
     //bloomSpeed = OSC/blooom/speed
     //bloomTarget = OSC/bloom/position
     
     //stepper.setMaxSpeed(bloomSpeed);
     //stepper.setAcceleration(bloomSpeed*2);
-    stepper.run();
+    stepper.runToNewPosition(bloomTarget);
   }
 
   //stepper.disableOutputs();
 }
 
 
-
-void setTopLimit() {              //define recalibration function for top limit switch
-  stepper.stop();
-  stepper.setCurrentPosition(safetyLimit);
-}
-
-void setBottomLimit() {           //define recalibration function for bottom limit switch
-  stepper.stop();
-  stepper.setCurrentPosition(fullBloom+safetyLimit);
-}
+//
+//void setTopLimit() {              //define recalibration function for top limit switch
+//  stepper.stop();
+//  stepper.setCurrentPosition(safetyLimit);
+//}
+//
+//void setBottomLimit() {           //define recalibration function for bottom limit switch
+//  stepper.stop();
+//  stepper.setCurrentPosition(fullBloom+safetyLimit);
+//}
