@@ -52,7 +52,7 @@ function moveMotor(position) {
     if (Math.abs(motorPositionValue - oldMotorPositionValue) > motorPositionDifference){
       temp = position + ",";
       console.log('Sending to arduino ::: ' + temp);
-      motorPort.write(new Buffer(temp);
+      motorPort.write(new Buffer(temp));
       oldMotorPositionValue = motorPositionValue;
     }
   }
