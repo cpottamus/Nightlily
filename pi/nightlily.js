@@ -30,7 +30,7 @@ motorPort.on("open", function () {
 motorPort.on("data", function(data) {
   console.log('Motor-Arduino sent to Pi:');
   console.log(data);
-  alert(typeof data);
+  console.log(typeof data);
   var dataTemp = data
   if ( data == "Arduino Ready") {
     console.log('Pi received ready signal, Motor Arduino Ready');
