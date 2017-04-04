@@ -21,6 +21,7 @@ var motorPort = new SerialPort("/dev/ttyACM0", {
 //Arduino "ready" state
 var readySignal = false;
 var requestingLocation = false;
+var sendingLocation = false;
 
 motorPort.on("open", function () {
   console.log('Motor port open');
@@ -37,8 +38,7 @@ motorPort.on("data", function(data) {
     readySignal = true;
   }else if (data == 4000 && readySignal == true) {
     console.log('Pi received request for location');
-    moveMotor();
-
+    sendingLocation = true;
   }
 });
 
@@ -72,8 +72,11 @@ var udp = dgram.createSocket('udp4', function(msg, rinfo) {
 
     if (oscMsg.address == '/bloom/position') {
       motorPositionValue = oscMsg.args[0].value;
-      //console.log("The motorPositionValue from vezer is :: " + motorPositionValue);
-      
+      console.log("The motorPositionValue from vezer is :: " + motorPositionValue);
+      if (sendingLocation == true) {
+        moveMotor();
+        sendingLocation = false;
+      }
     }
 
   } catch (err) {
