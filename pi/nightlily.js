@@ -13,46 +13,44 @@ var temp = "";
 // Set up serial for motor.
 var SerialPort = require("serialport");
 var motorPort = new SerialPort("/dev/ttyACM0", {
-  baudrate: 115200,
-  parser: SerialPort.parsers.byteLength(4)
+  baudrate: 115200
 
 });
 
 //Arduino "ready" state
-var readySignal = 00000;
+var readySignal = false;
+var requestingLocation = false;
 
 motorPort.on("open", function () {
   console.log('Motor port open');
 
-  //Print out data received from motor port. Check if a signal received is '2', and enable writing to Arduino when it is.
+  //Print out data received from motor-arduino. Check if a signal received is '2', and enable writing to Arduino when it is.
   motorPort.on('data', function(data) {
-    console.log('Arduino sent back received: ' + data);
+    console.log('Motor-Arduino sent to Pi: ' + data);
 
-    if ( data == 2000) {
-      console.log('Pi received ready signal, Arduino Ready');
-      readySignal = 2000;
+    if ( data.includes("Arduino Ready")) {
+      console.log('Pi received ready signal, Motor Arduino Ready');
+      readySignal = true;
+    }
+    if (data.includes("Requesting Location") && readySignal == true) {
+      console.log(data);
+      moveMotor();
+
     }
   });
 
-  //If ready, enable sending to arduino.
-  // if ( readySignal == 2000) {
-  //   //May need to consider buffer
-  //   //motorPort.write(new Buffer('4','utf-8'));
-  //   console.log('Sending to arduino');
-  //   motorPort.write(6798);
-
-  //   }
-      //Send OSC Commands here.
-      //Call Function to interpret the 0,1 OSC feedback and then pass here.
 });
 
-function moveMotor(position) {
-  if(readySignal = 2000) {
+function moveMotor() {
+  if(readySignal == true) {
     //bottleneck commands, only send when step difference is exceeded. 
     if (Math.abs(motorPositionValue - oldMotorPositionValue) > motorPositionDifference){
-      temp = position + ",";
-      console.log('Sending to arduino ::: ' + temp);
-      motorPort.write(new Buffer(temp));
+      temp = motorPositionValue + "       \n";
+      console.log('Sending to motor arduino ::: ' + temp);
+      motorPort.write(temp, function(err, results) {
+        console.log('err ' + err);
+        console.log('results ' + results);
+      });
       oldMotorPositionValue = motorPositionValue;
     }
   }
@@ -69,12 +67,12 @@ var udp = dgram.createSocket('udp4', function(msg, rinfo) {
 
     oscMsg = osc.fromBuffer(msg);
 
-    //HERE IS WHERE YOU CALL FUNCTIONS TO INTERPRET MESSAGE
+    //Interpret Message
 
     if (oscMsg.address == '/bloom/position') {
       motorPositionValue = oscMsg.args[0].value;
-      console.log("The motorPositionValue from vezer is :: " + motorPositionValue);
-      moveMotor(motorPositionValue);
+      //console.log("The motorPositionValue from vezer is :: " + motorPositionValue);
+      
     }
 
   } catch (err) {

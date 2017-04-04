@@ -9,11 +9,13 @@ int bloomTarget = 0;        //set initial bloom target position
 int topLimitPin = 2;             //set pin for top limit switch
 int bottomLimitPin = 3;          //set pin for bottom limit switch
 int bloomSpeed = feet;
-int maxAcceleration = 8000;
+int maxAcceleration = 1500;
 int safetyLimit = -100;
 int incomingByte = 0;           //for incoming serial data
 int newTarget = 0;              //for incoming serial data
-
+String inputString = "";
+boolean inputComplete = false;
+boolean sentLocationRequest = false;
 
 void setup() {
 
@@ -24,11 +26,15 @@ void setup() {
   }
   delay(2000);
   // Send ready signal.
-  Serial.println(2000);
+  Serial.println("Arduino Ready");
   
-  stepper.setMaxSpeed(maxAcceleration);
+  stepper.setMaxSpeed(maxAcceleration+2500);
   stepper.setAcceleration(maxAcceleration);
-//  stepper.setMinPulseWidth(25);
+  stepper.setMinPulseWidth(100);
+       
+
+ // This will be the limit switch in the future
+ stepper.setCurrentPosition(0);
 
 /*
   attachInterrupt(digitalPinToInterrupt(topLimitPin), setTopLimit, CHANGE);      //interrupt & recalibrate when the top limit is hit
@@ -42,36 +48,60 @@ void setup() {
 } 
 
 void loop() {
+//Run motor
+stepper.run();
 
-   
-  
-  //If data received
-  if(Serial.available()>0){
-      // read the incoming byte:
-      newTarget = Serial.parseInt();
-      Serial.println(newTarget);
-
-
- 
-      if(stepper.currentPosition() == bloomTarget) {
-        bloomTarget = newTarget;
-        Serial.println(bloomTarget);
-      }
-      
-  }
-  
-  if (stepper.currentPosition() != bloomTarget){
-    //osc listener goes here
-    //bloomSpeed = OSC/blooom/speed
-    //bloomTarget = OSC/bloom/position
+  //If we've reached our position, read the serial input.
+  if(stepper.distanceToGo() == 0) {
+    getSerialInput();
     
-    //stepper.setMaxSpeed(bloomSpeed);
-    //stepper.setAcceleration(bloomSpeed*2);
-    stepper.runToNewPosition(bloomTarget);
   }
-
-  //stepper.disableOutputs();
 }
+
+
+void getSerialInput() {
+  if(sentLocationRequest == false) {
+    //Write to the pi to request serial
+    Serial.println("Requesting Location");
+    sentLocationRequest = true;
+  }
+  
+  while(Serial.available() > 0) {
+    char in = (char) Serial.read();
+      if(in == '\n'){
+        inputComplete = true;
+        parseAndMoveToInputLocation(inputString);
+      }
+      else{
+        inputString += in;
+      }
+  }
+}
+
+
+void parseAndMoveToInputLocation(String& input){
+
+  //Parse whatever the input looks like. interpret the position, and update.
+  int newPosition = input.toFloat();
+  stepper.moveTo(newPosition);
+  Serial.println("Location Received = " + newPosition);
+
+  //Clear state
+  inputString = "";
+  sentLocationRequest = false;
+  inputComplete = false;
+}
+
+/*
+stepper.run()
+
+if(stepper.distanceToGo() == 0) {
+  while(Serial.available()>0)
+  input = Serial.parseInt (or some new-line based parse)
+  Stepper.moveTo(input)
+  consider flushing the serial here serial.Flush()
+}
+*/
 
 
 //
