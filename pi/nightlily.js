@@ -4,7 +4,10 @@ var osc = require('osc-min'),
     remote;
 
 // Init Lights
-
+var ws281x = require('rpi-ws281x-native');
+var NUM_LEDS = 12;
+ws281x.init(NUM_LEDS, 18);
+pixelData = new Uint32Array(NUM_LEDS);
 
 //instantiate msg object & parameters
 var oscMsg = {};
