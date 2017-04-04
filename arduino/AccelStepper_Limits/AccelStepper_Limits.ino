@@ -30,7 +30,6 @@ void setup() {
   
   stepper.setMaxSpeed(maxAcceleration+2500);
   stepper.setAcceleration(maxAcceleration);
-  stepper.setMinPulseWidth(100);
        
 
  // This will be the limit switch in the future
@@ -81,14 +80,27 @@ void getSerialInput() {
 
 void parseAndMoveToInputLocation(String& input){
 
-  //Parse whatever the input looks like. interpret the position, and update.
-  int newPosition = input.toFloat();
+  //"4000 s 4000 a 0000"
+  //Need to extract "position", "speed", or "acceleration" from the message.
+  
+   int newPosition = input.toFloat();
+   if(input.indexOf('s') != -1) {
+    String tempPos = input.substring((input.indexOf('s')+1));
+    int newSpeed = tempPos.toFloat();
+    stepper.setSpeed(newSpeed);
+   }
+   if(input.indexOf('a') != -1){
+    String tempPos = input.substring((input.indexOf('a')+1));
+    int newAccel = tempPos.toFloat();
+    stepper.setAcceleration(newAccel);
+  }
+
   stepper.moveTo(newPosition);
   Serial.println(2000);
+  sentLocationRequest = false;
 
   //Clear state
   inputString = "";
-  sentLocationRequest = false;
   inputComplete = false;
 }
 

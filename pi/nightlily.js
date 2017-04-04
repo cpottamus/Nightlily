@@ -6,6 +6,8 @@ var osc = require('osc-min'),
 //instantiate msg object & parameters
 var oscMsg = {};
 var motorPositionValue = 0;
+var motorSpeedValue = 0;
+var motorAccelValue = 0;
 var temp = "";
 
 // Set up serial for motor.
@@ -40,12 +42,18 @@ motorPort.on("data", function(data) {
 
 function moveMotor() {
   //bottleneck commands, only send when step difference is exceeded. 
-    temp = motorPositionValue + "       \n";
+    temp = motorPositionValue;
+    temp += ((motorSpeedValue != 0) ? "s" + motorSpeedValue : "");
+    temp += ((motorAccelValue != 0) ? "a" + motorAccelValue : "";
+    temp += " \n";
     console.log('Sending to motor arduino ::: ' + temp);
     motorPort.write(temp, function(err, results) {
       console.log('err ' + err);
       console.log('results ' + results);
     });
+    //reset state
+    motorSpeedValue = 0;
+    motorAccelValue = 0;
 }
 
 // listen for OSC messages and print them to the console
@@ -69,6 +77,16 @@ var udp = dgram.createSocket('udp4', function(msg, rinfo) {
         sendingLocation = false;
       }
     }
+
+    if (oscMsg.address == '/bloom/speed'){
+      console.log("The motorSpeedValue from vezer is :: " + motorSpeedValue);
+      motorSpeedValue = oscMsg.args[0].value;
+    }
+
+    if (oscMsg.address == '/bloom/accel'){
+      console.log("The motorAccelValue from vezer is :: " + motorAccelValue);
+      motorAccelValue = oscMsg.args[0].value;
+    }    
 
   } catch (err) {
     console.log('Could not decode OSC message');
