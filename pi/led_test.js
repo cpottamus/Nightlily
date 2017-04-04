@@ -18,7 +18,7 @@ setInterval(function () {
   }
 
   offset = (offset + 1) % 256;
-  console.log("pixelData  " + pixelData);
+  console.log("pixelData  " + pixelData.values());
   ws281x.render(pixelData);
 }, 1000 / 30);
 
