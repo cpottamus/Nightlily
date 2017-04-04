@@ -12,7 +12,7 @@ process.on('SIGINT', function () {
 // ---- animation-loop
 var offset = 0;
 setInterval(function () {
-  for (var i = 0; i < NUM_LEDS; i++) {
+  for (var i = 0; i < 12; i++) {
     pixelData[i] = colorwheel((offset + i) % 256);
   }
 
