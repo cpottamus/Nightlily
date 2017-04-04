@@ -11,28 +11,19 @@ process.on('SIGINT', function () {
 
 
 // ---- animation-loop
+
+// ---- animation-loop
 var offset = 0;
 setInterval(function () {
-  for (var i = 0; i < 12; i++) {
-    pixelData[i] = colorwheel((offset + i) % 256);
+  var i=12;
+  while(i--) {
+      pixelData[i] = 0;
   }
+  pixelData[offset] = 0xffffff;
 
-  offset = (offset + 1) % 256;
+  offset = (offset + 1) % 12;
   console.log(pixelData);
   ws281x.render(pixelData);
-}, 1000 / 30);
+}, 100);
 
 console.log('Press <ctrl>+C to exit.');
-
-
-// rainbow-colors, taken from http://goo.gl/Cs3H0v
-function colorwheel(pos) {
-  pos = 255 - pos;
-  if (pos < 85) { return rgb2Int(255 - pos * 3, 0, pos * 3); }
-  else if (pos < 170) { pos -= 85; return rgb2Int(0, pos * 3, 255 - pos * 3); }
-  else { pos -= 170; return rgb2Int(pos * 3, 255 - pos * 3, 0); }
-}
-
-function rgb2Int(r, g, b) {
-  return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
-}
