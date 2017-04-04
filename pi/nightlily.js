@@ -26,11 +26,11 @@ motorPort.on("open", function () {
   console.log('Motor port open');
 
   //Print out data received from motor-arduino. Check if a signal received is '2', and enable writing to Arduino when it is.
-  motorPort.on('data', function(data) {
+  motorPort.on("data", function(data) {
     console.log('Motor-Arduino sent to Pi:');
     console.log(data);
     var dataTemp = "data"
-    if ( dataTemp.includes('Arduino Ready')) {
+    if ( dataTemp == "Arduino Ready")) {
       console.log('Pi received ready signal, Motor Arduino Ready');
       readySignal = true;
     }else if (dataTemp.includes("Requesting Location") && readySignal == true) {
