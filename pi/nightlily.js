@@ -32,10 +32,10 @@ motorPort.on("data", function(data) {
   console.log(data);
   console.log(typeof data);
   var dataTemp = data
-  if ( data == "Arduino Ready") {
+  if ( data == 2000) {
     console.log('Pi received ready signal, Motor Arduino Ready');
     readySignal = true;
-  }else if (data == "Requesting Location" && readySignal == true) {
+  }else if (data == 4000 && readySignal == true) {
     console.log(data);
     moveMotor();
 

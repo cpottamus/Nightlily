@@ -26,7 +26,7 @@ void setup() {
   }
   delay(2000);
   // Send ready signal.
-  Serial.println("Arduino Ready");
+  Serial.println(2000);
   
   stepper.setMaxSpeed(maxAcceleration+2500);
   stepper.setAcceleration(maxAcceleration);
@@ -62,7 +62,7 @@ stepper.run();
 void getSerialInput() {
   if(sentLocationRequest == false) {
     //Write to the pi to request serial
-    Serial.println("Requesting Location");
+    Serial.println(4000);
     sentLocationRequest = true;
   }
   
@@ -84,7 +84,7 @@ void parseAndMoveToInputLocation(String& input){
   //Parse whatever the input looks like. interpret the position, and update.
   int newPosition = input.toFloat();
   stepper.moveTo(newPosition);
-  Serial.println("Location Received = " + newPosition);
+  Serial.println(2000);
 
   //Clear state
   inputString = "";
