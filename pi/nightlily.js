@@ -3,6 +3,9 @@ var osc = require('osc-min'),
     dgram = require('dgram'),
     remote;
 
+// Init Lights
+
+
 //instantiate msg object & parameters
 var oscMsg = {};
 var motorPositionValue = 0;
