@@ -13,7 +13,8 @@ var temp = "";
 // Set up serial for motor.
 var SerialPort = require("serialport");
 var motorPort = new SerialPort("/dev/ttyACM0", {
-  baudrate: 115200
+  baudrate: 115200,
+  parser: SerialPort.parsers.readline('\n')
 
 });
 
