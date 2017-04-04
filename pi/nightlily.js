@@ -31,8 +31,7 @@ motorPort.on("open", function () {
     if ( data.includes("Arduino Ready")) {
       console.log('Pi received ready signal, Motor Arduino Ready');
       readySignal = true;
-    }
-    if (data.includes("Requesting Location") && readySignal == true) {
+    }else if (data.includes("Requesting Location") && readySignal == true) {
       console.log(data);
       moveMotor();
 
