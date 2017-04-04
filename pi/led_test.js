@@ -1,4 +1,4 @@
-var ws281x = require('lib/ws281x-native');
+var ws281x = require('rpi-ws281x-native');
 
 ws281x.init(12, 18);
 
@@ -33,4 +33,4 @@ function colorwheel(pos) {
 
 function rgb2Int(r, g, b) {
   return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
-}
+})
