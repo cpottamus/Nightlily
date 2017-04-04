@@ -1,4 +1,4 @@
-var ws281x = require('ws281x-native');
+var ws281x = require('../lib/ws281x-native');
 
 ws281x.init(12, 18);
 
