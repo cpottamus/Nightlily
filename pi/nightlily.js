@@ -6,8 +6,6 @@ var osc = require('osc-min'),
 //instantiate msg object & parameters
 var oscMsg = {};
 var motorPositionValue = 0;
-var oldMotorPositionValue = 0;
-var motorPositionDifference = 400;
 var temp = "";
 
 // Set up serial for motor.
@@ -48,7 +46,6 @@ function moveMotor() {
       console.log('err ' + err);
       console.log('results ' + results);
     });
-    oldMotorPositionValue = motorPositionValue;
 }
 
 // listen for OSC messages and print them to the console
