@@ -29,9 +29,7 @@ motorPort.on("open", function () {
 
 //Print out data received from motor-arduino. Check if a signal received is '2', and enable writing to Arduino when it is.
 motorPort.on("data", function(data) {
-  console.log('Motor-Arduino sent to Pi:');
-  console.log(data);
-  console.log(typeof data);
+  console.log('Motor-Arduino sent to Pi:' + data);
   var dataTemp = data
   if ( data == 2000) {
     console.log('Pi received ready signal, Motor Arduino Ready');
@@ -43,18 +41,14 @@ motorPort.on("data", function(data) {
 });
 
 function moveMotor() {
-  if(readySignal == true) {
-    //bottleneck commands, only send when step difference is exceeded. 
-    if (Math.abs(motorPositionValue - oldMotorPositionValue) > motorPositionDifference){
-      temp = motorPositionValue + "       \n";
-      console.log('Sending to motor arduino ::: ' + temp);
-      motorPort.write(temp, function(err, results) {
-        console.log('err ' + err);
-        console.log('results ' + results);
-      });
-      oldMotorPositionValue = motorPositionValue;
-    }
-  }
+  //bottleneck commands, only send when step difference is exceeded. 
+    temp = motorPositionValue + "       \n";
+    console.log('Sending to motor arduino ::: ' + temp);
+    motorPort.write(temp, function(err, results) {
+      console.log('err ' + err);
+      console.log('results ' + results);
+    });
+    oldMotorPositionValue = motorPositionValue;
 }
 
 // listen for OSC messages and print them to the console
