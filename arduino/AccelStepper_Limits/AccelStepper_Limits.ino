@@ -1,18 +1,16 @@
 #include <AccelStepper.h>
 #include <MultiStepper.h>
 
-int feet = 1524;                    //define number of steps per 1' increase in bloom
-AccelStepper stepper(1, 9, 13);   //configure AccelStepper library
-int setEnablePin = 8;             //set the enable pin
-int fullBloom =   7420;        //definie full bloom position
-int bloomTarget = 0;        //set initial bloom target position
-int topLimitPin = 2;             //set pin for top limit switch
-int bottomLimitPin = 3;          //set pin for bottom limit switch
-int bloomSpeed = feet;
+AccelStepper stepper(1, 9, 13); //configure AccelStepper library
+int setEnablePin = 8;           //set the enable pin
+int topLimitPin = 2;            //set pin for top limit switch
+int bottomLimitPin = 3;         //set pin for bottom limit switch
+
+int feet = 1524;                //define number of steps per 1' increase in bloom
+int fullBloom =   7420;         //define full bloom position
+int bloomTarget = 0;            //set initial bloom target position
 int maxAcceleration = 1500;
-int safetyLimit = -100;
-int incomingByte = 0;           //for incoming serial data
-int newTarget = 0;              //for incoming serial data
+int maximumSpeed = 4000;
 String inputString = "";
 boolean inputComplete = false;
 boolean sentLocationRequest = false;
@@ -28,11 +26,11 @@ void setup() {
   // Send ready signal.
   Serial.println(2000);
   
-  stepper.setMaxSpeed(maxAcceleration+2500);
+  stepper.setMaxSpeed(maximumSpeed);
   stepper.setAcceleration(maxAcceleration);
        
 
- // This will be the limit switch in the future
+ // This will be the limit switch in the future (calibrate by running until it hits)
  stepper.setCurrentPosition(0);
 
 /*
@@ -53,7 +51,6 @@ stepper.run();
   //If we've reached our position, read the serial input.
   if(stepper.distanceToGo() == 0) {
     getSerialInput();
-    
   }
 }
 
@@ -65,6 +62,7 @@ void getSerialInput() {
     sentLocationRequest = true;
   }
   
+  //Read in incoming serial, until you hit newline parse.
   while(Serial.available() > 0) {
     char in = (char) Serial.read();
       if(in == '\n'){
@@ -77,43 +75,37 @@ void getSerialInput() {
   }
 }
 
-
 void parseAndMoveToInputLocation(String& input){
 
-  //"4000 s 4000 a 0000"
-  //Need to extract "position", "speed", or "acceleration" from the message.
-  
+   //Message is of format "4000s4000a0000"
+
+   //Truncates on first non-numeric, gets position, sets target.
    int newPosition = input.toFloat();
+   stepper.moveTo(newPosition);
+   
+   //If speed included, substrings after s and truncates again.
    if(input.indexOf('s') != -1) {
     String tempPos = input.substring((input.indexOf('s')+1));
     int newSpeed = tempPos.toFloat();
     stepper.setSpeed(newSpeed);
    }
+   //If accel included, substrings after a and truncates again.
    if(input.indexOf('a') != -1){
     String tempPos = input.substring((input.indexOf('a')+1));
     int newAccel = tempPos.toFloat();
     stepper.setAcceleration(newAccel);
   }
 
-  stepper.moveTo(newPosition);
-  Serial.println(2000);
+  //Don't think i need to print out a ready signal again.
+  //Serial.println(2000);
+
+  //Enable arduino to request another location once it reaches this one.
   sentLocationRequest = false;
 
   //Clear state
   inputString = "";
   inputComplete = false;
 }
-
-/*
-stepper.run()
-
-if(stepper.distanceToGo() == 0) {
-  while(Serial.available()>0)
-  input = Serial.parseInt (or some new-line based parse)
-  Stepper.moveTo(input)
-  consider flushing the serial here serial.Flush()
-}
-*/
 
 
 //

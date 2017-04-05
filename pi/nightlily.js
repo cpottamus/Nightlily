@@ -24,7 +24,7 @@ var temp = "";
 
 //Arduino command state vars
 var arduinoBooted = false;
-var readyForLocation = false;
+var locationRequested = false;
 
 /*
 //////////////////////////////////////////////////////
@@ -55,7 +55,7 @@ motorPort.on("data", function(data) {
     arduinoBooted = true;
   }else if (data == 4000 && arduinoBooted == true) {
     console.log('Pi received request for location');
-    readyForLocation = true;
+    locationRequested = true;
   }
 });
 
@@ -81,8 +81,8 @@ function moveMotor() {
 //////////////////////////////////////////////////////
 */
 
-//DO WE NEED THIS???
-// ---- trap the SIGINT and reset before exit
+// Catches SIGINT (ctrl+c) and resets our ws281x LEDs before exit.
+// Do we need this? And if so, do we need this for additional interrupts.
 process.on('SIGINT', function () {
   ws281x.reset();
   process.nextTick(function () { process.exit(0); });
@@ -123,9 +123,9 @@ function handleOSCMessage(msg) {
       case '/bloom/position':
         motorPositionValue = msg.args[0].value;
         console.log("The motorPositionValue from vezer is :: " + motorPositionValue);
-        if (readyForLocation == true) {
+        if (locationRequested == true) {
           moveMotor();
-          readyForLocation = false;
+          locationRequested = false;
         }
         break;
       case '/bloom/speed':        
