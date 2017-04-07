@@ -149,7 +149,8 @@ function toggleProjectorPower() {
       var powerSignal = [0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11, ,0x01, 0x00, 0x5E];
       projectorsOn = false;
     }
-    projectorsOn.write(powerSignal);
+    projectorPort1.write(powerSignal);
+    projectorPort2.write(powerSignal);
 }
 
 /*
