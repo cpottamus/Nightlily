@@ -140,13 +140,13 @@ projectorPort2.on("open", function () {
 
 //Print out data received from projectors. 
 projectorPort1.on("data", function(data) {
-  console.log('Pi received projector 1 serial :: ');
-  console.log(data);
+  //console.log('Pi received projector 1 serial :: ');
+  //console.log(data);
 });
 
 projectorPort2.on("data", function(data) {
-  console.log('Pi received projector 2 serial :: ');
-  console.log(data);
+  //console.log('Pi received projector 2 serial :: ');
+  //console.log(data);
 });
 
 //Builds a string for position, as well as speed and acceleration if available.
@@ -221,6 +221,7 @@ function handleOSCMessage(msg) {
       case '/light/petal/color/1':
         pixelData[0] = rgb2Int(msg.args[0].value, msg.args[1].value, msg.args[2].value);
         console.log("The petal-1-color from vezer is :: " + pixelData[0] + ". In RGB :: " + msg.args[0].value + ", " + msg.args[1].value + ", " + msg.args[2].value );
+        console.log(pixelData);
         ws281x.render(pixelData);
         break;
       case '/light/petal/color/2':
