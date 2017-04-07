@@ -79,7 +79,7 @@ function moveMotor() {
       if (err) {
           console.log('Error while sending message : ' + err);
       }
-      if (result) {
+      if (results) {
           console.log('Response received after sending message : ' + result);
       }
     });
@@ -165,12 +165,12 @@ function toggleProjectorPower() {
     //console.log("Power signal ::: ");
     console.log(powerSignal);
 
-    projectorPort1.write(powerSignal, function (err, result) {
+    projectorPort1.write(powerSignal, function (err, results) {
             if (err) {
                 console.log('Error while sending message : ' + err);
             }
-            if (result) {
-                console.log('Response received after sending message : ' + result);
+            if (results) {
+                console.log('Response received after sending message : ' + results);
             }
     });
     projectorPort2.write(powerSignal);
