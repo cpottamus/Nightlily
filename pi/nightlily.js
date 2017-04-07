@@ -14,7 +14,7 @@ var SerialPort = require("serialport");
 
 var NUM_LEDS = 11;
 ws281x.init(NUM_LEDS, 18);
-var pixelData = new Uint32Array(NUM_LEDS);
+var pixelData = new Uint32Array([0,0,0,0,0,0,0,0,0,0,0]);
 //pixelData.prototype.fill(rgb2Int(0,0,0));
 
 //Motor vars
