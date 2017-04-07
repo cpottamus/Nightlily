@@ -116,7 +116,7 @@ function rgb2Int(r, g, b) {
 
 // Instantiate Serial Ports
 var projectorPort1 = new SerialPort("/dev/ttyUSB0", {
-  baudrate: 9600
+  baudrate: 115200
 });
 
 projectorPort1.on("open", function () {
@@ -124,7 +124,7 @@ projectorPort1.on("open", function () {
 });
 
 var projectorPort2 = new SerialPort("/dev/ttyUSB1", {
-  baudrate: 9600
+  baudrate: 115200
 });
 
 projectorPort2.on("open", function () {
