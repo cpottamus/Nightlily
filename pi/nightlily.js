@@ -30,9 +30,9 @@ var locationRequested = false;
 //Projector Globals
 var projectorsOn = false;
 var onBuffer = new Buffer(10);
-onBuffer[0] = 0x06; onBuffer[1] = 0x14; onBuffer[2] = 0x00; onBuffer[3] = 0x04; onBuffer[4] = 0x00; onBuffer[5] 0x34; onBuffer[6] = 0x11; onBuffer[7] = 0x00; onBuffer[8] = 0x00; onBuffer[9] =0x5D;
+onBuffer[0] = 0x06; onBuffer[1] = 0x14; onBuffer[2] = 0x00; onBuffer[3] = 0x04; onBuffer[4] = 0x00; onBuffer[5] = 0x34; onBuffer[6] = 0x11; onBuffer[7] = 0x00; onBuffer[8] = 0x00; onBuffer[9] =0x5D;
 var offBuffer = new Buffer(10);
-offBuffer[0] = 0x06; offBuffer[1] = 0x14; offBuffer[2] = 0x00; offBuffer[3] = 0x04; offBuffer[4] = 0x00; offBuffer[5] 0x34; offBuffer[6] = 0x11; offBuffer[7] = 0x01; offBuffer[8] = 0x00; offBuffer[9] =0x5D;
+offBuffer[0] = 0x06; offBuffer[1] = 0x14; offBuffer[2] = 0x00; offBuffer[3] = 0x04; offBuffer[4] = 0x00; offBuffer[5] = 0x34; offBuffer[6] = 0x11; offBuffer[7] = 0x01; offBuffer[8] = 0x00; offBuffer[9] =0x5D;
 
 /*
 //////////////////////////////////////////////////////
