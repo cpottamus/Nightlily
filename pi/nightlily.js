@@ -142,13 +142,15 @@ projectorPort2.on("data", function(data) {
 function toggleProjectorPower() {
     if(projectorsOn == true){
       console.log("Turning on projectors");
-      var powerSignal = [0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11, 0x00, 0x00, 0x5D];
+      var powerSignal = newBuffer([0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11, 0x00, 0x00, 0x5D]);
       projectorsOn = true;
     }else if(projectorsOn == false){
       console.log("Turning off projectors");      
-      var powerSignal = [0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11, ,0x01, 0x00, 0x5E];
+      var powerSignal = newBuffer([0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11 ,0x01, 0x00, 0x5E]);
       projectorsOn = false;
     }
+    console.log("Power signal::: ");
+    console.log(powerSignal);
     projectorPort1.write(powerSignal);
     projectorPort2.write(powerSignal);
 }
