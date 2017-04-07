@@ -29,6 +29,10 @@ var locationRequested = false;
 
 //Projector Globals
 var projectorsOn = false;
+var onBuffer = new Buffer(10);
+onBuffer[0] = 0x06; onBuffer[1] = 0x14; onBuffer[2] = 0x00; onBuffer[3] = 0x04; onBuffer[4] = 0x00; onBuffer[5] 0x34; onBuffer[6] = 0x11; onBuffer[7] = 0x00; onBuffer[8] = 0x00; onBuffer[9] =0x5D;
+var offBuffer = new Buffer(10);
+offBuffer[0] = 0x06; offBuffer[1] = 0x14; offBuffer[2] = 0x00; offBuffer[3] = 0x04; offBuffer[4] = 0x00; offBuffer[5] 0x34; offBuffer[6] = 0x11; offBuffer[7] = 0x01; offBuffer[8] = 0x00; offBuffer[9] =0x5D;
 
 /*
 //////////////////////////////////////////////////////
@@ -142,18 +146,28 @@ projectorPort2.on("data", function(data) {
 function toggleProjectorPower() {
     if(projectorsOn == true){
       console.log("Turning on projectors");
+      var powerSignal = onBuffer;
       //var powerSignal = new Buffer([0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11, 0x00, 0x00, 0x5D]);
-      var powerSignal = Buffer.from("0614000400341100005D", "hex");
+      // var powerSignal = Buffer.from("0614000400341100005D", "hex");
       projectorsOn = false;
     }else if(projectorsOn == false){
-      console.log("Turning off projectors");      
+      console.log("Turning off projectors");
+      var powerSignal = onBuffer;     
       //var powerSignal = new Buffer([0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11 ,0x01, 0x00, 0x5E]);
-      var powerSignal = Buffer.from("0614000400341101005E", "hex");
+      // var powerSignal = Buffer.from("0614000400341101005E", "hex");
       projectorsOn = true;
     }
     console.log("Power signal ::: ");
     console.log(powerSignal);
-    projectorPort1.write(powerSignal);
+
+    projectorPort1.write(powerSignal, function (err, result) {
+            if (err) {
+                console.log('Error while sending message : ' + err);
+            }
+            if (result) {
+                console.log('Response received after sending message : ' + result);
+            }
+    });
     projectorPort2.write(powerSignal);
 }
 
