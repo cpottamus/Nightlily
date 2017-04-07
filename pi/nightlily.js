@@ -152,7 +152,7 @@ function toggleProjectorPower() {
       projectorsOn = false;
     }else if(projectorsOn == false){
       console.log("Turning off projectors");
-      var powerSignal = onBuffer;     
+      var powerSignal = offBuffer;     
       //var powerSignal = new Buffer([0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11 ,0x01, 0x00, 0x5E]);
       // var powerSignal = Buffer.from("0614000400341101005E", "hex");
       projectorsOn = true;
