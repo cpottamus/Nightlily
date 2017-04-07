@@ -163,7 +163,7 @@ function toggleProjectorPower() {
       projectorsOn = true;
     }
     //console.log("Power signal ::: ");
-    console.log(powerSignal);
+    //console.log(powerSignal);
 
     projectorPort1.write(powerSignal, function (err, results) {
             if (err) {
