@@ -142,17 +142,14 @@ projectorPort2.on("data", function(data) {
 function toggleProjectorPower() {
     if(projectorsOn == true){
       console.log("Turning on projectors");
-      var powerSignal = "0x06\x0x14\x0x00\x0x04\x0x00\x0x34\x0x11\x0x00\x0x00\x0x5D";
+      var powerSignal = [0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11, 0x00, 0x00, 0x5D];
       projectorsOn = true;
     }else if(projectorsOn == false){
       console.log("Turning off projectors");      
-      var powerSignal = "0x06\x0x14\x0x00\x0x04\x0x00\x0x34\x0x11\x0x01\x0x00\x0x5E";
+      var powerSignal = [0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11, ,0x01, 0x00, 0x5E];
       projectorsOn = false;
     }
-    motorPort.write(powerSignal, function(err, results) {
-      console.log('err ' + err);
-      console.log('results ' + results);
-    });
+    projectorsOn.write(powerSignal);
 }
 
 /*
