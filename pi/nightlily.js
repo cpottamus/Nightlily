@@ -265,6 +265,7 @@ function handleOSCMessage(msg) {
      /////////////////////////
       case '/projector/power':
         projectorsOn = msg.args[0].value;
+        console.log("Projector message from vezer is :: " + projectorsOn)
         toggleProjectorPower();
         break;
 
