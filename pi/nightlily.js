@@ -140,11 +140,13 @@ projectorPort2.on("open", function () {
 
 //Print out data received from projectors. 
 projectorPort1.on("data", function(data) {
-  console.log('Pi received projector 1 serial :: ' + data);
+  console.log('Pi received projector 1 serial :: ');
+  console.log(data);
 });
 
 projectorPort2.on("data", function(data) {
-  console.log('Pi received projector 2 serial :: ' + data);
+  console.log('Pi received projector 2 serial :: ');
+  console.log(data);
 });
 
 //Builds a string for position, as well as speed and acceleration if available.
