@@ -33,7 +33,7 @@ var onBuffer = new Buffer(10);
 onBuffer[0] = 0x06; onBuffer[1] = 0x14; onBuffer[2] = 0x00; onBuffer[3] = 0x04; onBuffer[4] = 0x00; onBuffer[5] = 0x34; onBuffer[6] = 0x11; onBuffer[7] = 0x00; onBuffer[8] = 0x00; onBuffer[9] =0x5D;
 var offBuffer = new Buffer(10);
 offBuffer[0] = 0x06; offBuffer[1] = 0x14; offBuffer[2] = 0x00; offBuffer[3] = 0x04; offBuffer[4] = 0x00; offBuffer[5] = 0x34; offBuffer[6] = 0x11; offBuffer[7] = 0x01; offBuffer[8] = 0x00; offBuffer[9] =0x5E;
-
+//orange 13, yellow 9, green 5v
 /*
 //////////////////////////////////////////////////////
                   Motor Serial Port
@@ -56,7 +56,7 @@ motorPort.on("open", function () {
 //Check if a signal received is '2000', enable writing when true.
 //If 4000, send over most recent Vezer command.
 motorPort.on("data", function(data) {
-  console.log('Motor-Arduino sent to Pi:' + data);
+  //console.log('Motor-Arduino sent to Pi:' + data);
   var dataTemp = data
   if ( data == 2000) {
     console.log('Pi received ready signal, Motor Arduino Ready');
@@ -74,10 +74,14 @@ function moveMotor() {
     temp += ((motorSpeedValue != 0) ? "s" + motorSpeedValue : "");
     temp += ((motorAccelValue != 0) ? "a" + motorAccelValue : "");
     temp += " \n";
-    console.log('Sending to motor arduino ::: ' + temp);
+    //console.log('Sending to motor arduino ::: ' + temp);
     motorPort.write(temp, function(err, results) {
-      console.log('err ' + err);
-      console.log('results ' + results);
+      if (err) {
+          console.log('Error while sending message : ' + err);
+      }
+      if (result) {
+          console.log('Response received after sending message : ' + result);
+      }
     });
     //resets state of speed & acceleration, so that they aren't passed in again unless set by Vezer.
     motorSpeedValue = 0;
@@ -98,6 +102,7 @@ process.on('SIGINT', function () {
 });
 
 //Bit shifts RGB values to create byte-representation of Color.
+//Line 37: https://github.com/beyondscreen/node-rpi-ws281x-native/blob/master/examples/rainbow.js
 function rgb2Int(r, g, b) {
   return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
 }
@@ -157,7 +162,7 @@ function toggleProjectorPower() {
       // var powerSignal = Buffer.from("0614000400341101005E", "hex");
       projectorsOn = true;
     }
-    console.log("Power signal ::: ");
+    //console.log("Power signal ::: ");
     console.log(powerSignal);
 
     projectorPort1.write(powerSignal, function (err, result) {
@@ -281,7 +286,7 @@ function handleOSCMessage(msg) {
      /////////////////////////
       case '/projector/power':
         projectorsOn = msg.args[0].value;
-        console.log("Projector message from vezer is :: " + projectorsOn)
+        //console.log("Projector message from vezer is :: " + projectorsOn)
         toggleProjectorPower();
         break;
 

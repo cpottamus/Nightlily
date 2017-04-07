@@ -61,6 +61,9 @@ Message format:
 
 `address` signifies that it's the motor
 	-"/bloom/position"
+	-"/bloom/speed"
+	-"/bloom/accel"
+
 
 `args`
 just a value between 0 and 1

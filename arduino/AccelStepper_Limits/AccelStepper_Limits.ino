@@ -87,7 +87,7 @@ void parseAndMoveToInputLocation(String& input){
    if(input.indexOf('s') != -1) {
     String tempPos = input.substring((input.indexOf('s')+1));
     int newSpeed = tempPos.toFloat();
-    stepper.setSpeed(newSpeed);
+    stepper.setMaxSpeed(newSpeed);
    }
    //If accel included, substrings after a and truncates again.
    if(input.indexOf('a') != -1){
