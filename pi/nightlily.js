@@ -193,7 +193,7 @@ function handleOSCMessage(msg) {
      // If position is passed, trigger a serial motor command only once, if arduino is ready.
       case '/bloom/position':
         motorPositionValue = msg.args[0].value;
-        console.log("The motorPositionValue from vezer is :: " + motorPositionValue);
+        //console.log("The motorPositionValue from vezer is :: " + motorPositionValue);
         if (locationRequested == true) {
           moveMotor();
           locationRequested = false;
@@ -201,11 +201,11 @@ function handleOSCMessage(msg) {
         break;
       case '/bloom/speed':        
         motorSpeedValue = msg.args[0].value;
-        console.log("The motorSpeedValue from vezer is :: " + motorSpeedValue);
+        //console.log("The motorSpeedValue from vezer is :: " + motorSpeedValue);
         break;
       case '/bloom/accel':
         motorAccelValue = msg.args[0].value;
-        console.log("The motorAccelValue from vezer is :: " + motorAccelValue);
+        //console.log("The motorAccelValue from vezer is :: " + motorAccelValue);
         break;
        /////////////////////////
       //      Color Cases    //
