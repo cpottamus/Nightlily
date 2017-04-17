@@ -9,13 +9,20 @@ var ws281x = require('rpi-ws281x-native');
 // Set up Serial
 var SerialPort = require("serialport");
 
+// Set up GPIO
+var gpio = require("pi-gpio");
+gpio.open(gpioPin, "output");
+
+
 //GLOBAL VARS
 //Light vars
 
 var NUM_LEDS = 11;
 ws281x.init(NUM_LEDS, 18);
-var pixelData = new Uint32Array([0,0,0,0,0,0,0,0,0,0,0]);
-//pixelData.prototype.fill(rgb2Int(0,0,0));
+var pixelData = new Uint32Array(NUM_LEDS);
+for(var i = 0; i < NUM_LEDS; i++) {
+    pixelData[i] = rgbToHex(0, 0, 0);
+}
 
 //Motor vars
 var oscMsg = {};
@@ -30,10 +37,15 @@ var locationRequested = false;
 //Projector Globals
 var projectorsOn = false;
 var onBuffer = new Buffer(10);
+//Factory specified hex codes for on/off :: http://www.projectorcentral.com/pdf/projector_manual_9230.pdf
 onBuffer[0] = 0x06; onBuffer[1] = 0x14; onBuffer[2] = 0x00; onBuffer[3] = 0x04; onBuffer[4] = 0x00; onBuffer[5] = 0x34; onBuffer[6] = 0x11; onBuffer[7] = 0x00; onBuffer[8] = 0x00; onBuffer[9] =0x5D;
 var offBuffer = new Buffer(10);
-offBuffer[0] = 0x06; offBuffer[1] = 0x14; offBuffer[2] = 0x00; offBuffer[3] = 0x04; offBuffer[4] = 0x00; offBuffer[5] = 0x34; offBuffer[6] = 0x11; offBuffer[7] = 0x01; offBuffer[8] = 0x00; offBuffer[9] =0x5E;
-//orange 13, yellow 9, green 5v
+  offBuffer[0] = 0x06; offBuffer[1] = 0x14; offBuffer[2] = 0x00; offBuffer[3] = 0x04; offBuffer[4] = 0x00; offBuffer[5] = 0x34; offBuffer[6] = 0x11; offBuffer[7] = 0x01; offBuffer[8] = 0x00; offBuffer[9] =0x5E;
+
+//Mist Globals
+var mistOn = false;
+var gpioPin = 16;
+var mistState = 0;
 /*
 //////////////////////////////////////////////////////
                   Motor Serial Port
@@ -103,8 +115,18 @@ process.on('SIGINT', function () {
 
 //Bit shifts RGB values to create byte-representation of Color.
 //Line 37: https://github.com/beyondscreen/node-rpi-ws281x-native/blob/master/examples/rainbow.js
-function rgb2Int(r, g, b) {
-  return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
+//function rgb2Int(r, g, b) {
+//  return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
+//}
+
+//Converts RGB values to hex.
+function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r, g, b) {
+    return "0x" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
 /*
@@ -112,6 +134,24 @@ function rgb2Int(r, g, b) {
                     Mist Control
 //////////////////////////////////////////////////////
 */
+
+//Checks the OSC value for Mist and sends a high/low GPIO accordingly.
+function toggleMist() {
+    if(mistOn == true){
+      console.log("Turning on mist machine");
+      mistState = 1;
+      mistOn = false;
+    }else if(mistOn == false){
+      console.log("Turning off mist machine");
+      mistState = 0;
+      mistOn = true;
+    }
+
+    //Opens when declared, and stays open to write this. If behaving erratically, may need to close.
+    gpio.write(gpioPin, mistState, function() {      
+      //gpio.close(gpioPin);
+    });
+}
 
 /*
 //////////////////////////////////////////////////////
@@ -149,23 +189,17 @@ projectorPort2.on("data", function(data) {
   //console.log(data);
 });
 
-//Builds a string for position, as well as speed and acceleration if available.
+//Assigns the proper hex buffer to powerSignal and then writes to both projectors.
 function toggleProjectorPower() {
     if(projectorsOn == true){
       console.log("Turning on projectors");
       var powerSignal = onBuffer;
-      //var powerSignal = new Buffer([0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11, 0x00, 0x00, 0x5D]);
-      // var powerSignal = Buffer.from("0614000400341100005D", "hex");
       projectorsOn = false;
     }else if(projectorsOn == false){
       console.log("Turning off projectors");
       var powerSignal = offBuffer;     
-      //var powerSignal = new Buffer([0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11 ,0x01, 0x00, 0x5E]);
-      // var powerSignal = Buffer.from("0614000400341101005E", "hex");
       projectorsOn = true;
     }
-    //console.log("Power signal ::: ");
-    //console.log(powerSignal);
 
     projectorPort1.write(powerSignal, function (err, results) {
             if (err) {
@@ -195,7 +229,6 @@ function handleOSCMessage(msg) {
      // If position is passed, trigger a serial motor command only once, if arduino is ready.
       case '/bloom/position':
         motorPositionValue = msg.args[0].value;
-        //console.log("The motorPositionValue from vezer is :: " + motorPositionValue);
         if (locationRequested == true) {
           moveMotor();
           locationRequested = false;
@@ -203,11 +236,9 @@ function handleOSCMessage(msg) {
         break;
       case '/bloom/speed':        
         motorSpeedValue = msg.args[0].value;
-        //console.log("The motorSpeedValue from vezer is :: " + motorSpeedValue);
         break;
       case '/bloom/accel':
         motorAccelValue = msg.args[0].value;
-        //console.log("The motorAccelValue from vezer is :: " + motorAccelValue);
         break;
        /////////////////////////
       //      Color Cases    //
@@ -215,6 +246,10 @@ function handleOSCMessage(msg) {
      //Update relevant pixelData indices. Log Value. Render.
       case '/light/petal/color/all':
        // pixelData.prototype.fill(rgb2Int(msg.args[0].value, msg.args[1].value, msg.args[2].value), 0, 8);
+        var tempHexColor = rgbToHex(msg.args[0].value, msg.args[1].value, msg.args[2].value);
+        for(var i = 0; i < 8; i++) {
+          pixelData[i] = tempHexColor;
+        }
         console.log("The all-petal-color from vezer is :: " + pixelData[0] + ". In RGB :: " + msg.args[0].value + ", " + msg.args[1].value + ", " + msg.args[2].value );
         ws281x.render(pixelData);
         break;
@@ -224,63 +259,73 @@ function handleOSCMessage(msg) {
         console.log(pixelData);
         ws281x.render(pixelData);
         break;
+      //TEST ON THIS ONE HERE.
       case '/light/petal/color/2':
-        pixelData[1] = rgb2Int(msg.args[0].value, msg.args[1].value, msg.args[2].value);
+        pixelData[1] = rgbToHex(msg.args[0].value, msg.args[1].value, msg.args[2].value);
         console.log("The petal-2-color from vezer is :: " + pixelData[1] + ". In RGB :: " + msg.args[0].value + ", " + msg.args[1].value + ", " + msg.args[2].value );
+        console.log(pixelData);
         ws281x.render(pixelData);
         break;
       case '/light/petal/color/3':
-        pixelData[2] = rgb2Int(msg.args[0].value, msg.args[1].value, msg.args[2].value);
+        pixelData[2] = rgbToHex(msg.args[0].value, msg.args[1].value, msg.args[2].value);
         console.log("The petal-3-color from vezer is :: " + pixelData[2] + ". In RGB :: " + msg.args[0].value + ", " + msg.args[1].value + ", " + msg.args[2].value );
         ws281x.render(pixelData);
         break;
       case '/light/petal/color/4':
-        pixelData[3] = rgb2Int(msg.args[0].value, msg.args[1].value, msg.args[2].value);
+        pixelData[3] = rgbToHex(msg.args[0].value, msg.args[1].value, msg.args[2].value);
         console.log("The petal-4-color from vezer is :: " + pixelData[3] + ". In RGB :: " + msg.args[0].value + ", " + msg.args[1].value + ", " + msg.args[2].value );
         ws281x.render(pixelData);
         break;
       case '/light/petal/color/5':
-        pixelData[4] = rgb2Int(msg.args[0].value, msg.args[1].value, msg.args[2].value);
+        pixelData[4] = rgbToHex(msg.args[0].value, msg.args[1].value, msg.args[2].value);
         console.log("The petal-5-color from vezer is :: " + pixelData[4] + ". In RGB :: " + msg.args[0].value + ", " + msg.args[1].value + ", " + msg.args[2].value );
         ws281x.render(pixelData);
         break;
       case '/light/petal/color/6':
-        pixelData[5] = rgb2Int(msg.args[0].value, msg.args[1].value, msg.args[2].value);
+        pixelData[5] = rgbToHex(msg.args[0].value, msg.args[1].value, msg.args[2].value);
         console.log("The petal-6-color from vezer is :: " + pixelData[5] + ". In RGB :: " + msg.args[0].value + ", " + msg.args[1].value + ", " + msg.args[2].value );
         ws281x.render(pixelData);
         break;
       case '/light/petal/color/7':
-        pixelData[6] = rgb2Int(msg.args[0].value, msg.args[1].value, msg.args[2].value);
+        pixelData[6] = rgbToHex(msg.args[0].value, msg.args[1].value, msg.args[2].value);
         console.log("The petal-7-color from vezer is :: " + pixelData[6] + ". In RGB :: " + msg.args[0].value + ", " + msg.args[1].value + ", " + msg.args[2].value );
         ws281x.render(pixelData);
         break;
       case '/light/petal/color/8':
-        pixelData[7] = rgb2Int(msg.args[0].value, msg.args[1].value, msg.args[2].value);
+        pixelData[7] = rgbToHex(msg.args[0].value, msg.args[1].value, msg.args[2].value);
         console.log("The petal-8-color from vezer is :: " + pixelData[7] + ". In RGB :: " + msg.args[0].value + ", " + msg.args[1].value + ", " + msg.args[2].value );
         ws281x.render(pixelData);
         break;
       case '/light/pistil/color/all':
         //pixelData.prototype.fill(rgb2Int(msg.args[0].value, msg.args[1].value, msg.args[2].value), 8, 11);
+        var tempHexColor = rgbToHex(msg.args[0].value, msg.args[1].value, msg.args[2].value);
+        for(var i = 8; i < 11; i++) {
+          pixelData[i] = tempHexColor;
+        }
         console.log("The all-pistil-color from vezer is :: " + pixelData[0] + ". In RGB :: " + msg.args[0].value + ", " + msg.args[1].value + ", " + msg.args[2].value );
         ws281x.render(pixelData);
         break;
       case '/light/pistil/color/1':
-        pixelData[8] = rgb2Int(msg.args[0].value, msg.args[1].value, msg.args[2].value);
+        pixelData[8] = rgbToHex(msg.args[0].value, msg.args[1].value, msg.args[2].value);
         console.log("The pistil-1-color from vezer is :: " + pixelData[8] + ". In RGB :: " + msg.args[0].value + ", " + msg.args[1].value + ", " + msg.args[2].value );
         ws281x.render(pixelData);
         break;
       case '/light/pistil/color/2':
-        pixelData[9] = rgb2Int(msg.args[0].value, msg.args[1].value, msg.args[2].value);
+        pixelData[9] = rgbToHex(msg.args[0].value, msg.args[1].value, msg.args[2].value);
         console.log("The pistil-2-color from vezer is :: " + pixelData[9] + ". In RGB :: " + msg.args[0].value + ", " + msg.args[1].value + ", " + msg.args[2].value );
         ws281x.render(pixelData);
         break;
       case '/light/pistil/color/3':
-        pixelData[10] = rgb2Int(msg.args[0].value, msg.args[1].value, msg.args[2].value);
+        pixelData[10] = rgbToHex(msg.args[0].value, msg.args[1].value, msg.args[2].value);
         console.log("The pistil-3-color from vezer is :: " + pixelData[10] + ". In RGB :: " + msg.args[0].value + ", " + msg.args[1].value + ", " + msg.args[2].value );
         ws281x.render(pixelData);
         break;
       case '/light/flower/color/all':
        // pixelData.prototype.fill(rgb2Int(msg.args[0].value, msg.args[1].value, msg.args[2].value));
+        var tempHexColor = rgbToHex(msg.args[0].value, msg.args[1].value, msg.args[2].value);
+        for(var i = 0; i < NUM_LEDS; i++) {
+          pixelData[i] = tempHexColor;
+        }
         console.log("The all-flower-color from vezer is :: " + pixelData[0] + ". In RGB :: " + msg.args[0].value + ", " + msg.args[1].value + ", " + msg.args[2].value );
         ws281x.render(pixelData);
         break;
@@ -289,10 +334,15 @@ function handleOSCMessage(msg) {
      /////////////////////////
       case '/projector/power':
         projectorsOn = msg.args[0].value;
-        //console.log("Projector message from vezer is :: " + projectorsOn)
         toggleProjectorPower();
         break;
-
+       /////////////////////////
+      //       Mist Case     //
+     /////////////////////////
+      case '/mist/power':
+        mistOn = msg.args[0].value;
+        toggleMist();
+        break;
     }
 }
 

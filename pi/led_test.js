@@ -1,14 +1,14 @@
-//var ws281x = require('rpi-ws281x-native');
+var ws281x = require('rpi-ws281x-native');
 
 var NUM_LEDS = 12
-//ws281x.init(NUM_LEDS, 18);
+ws281x.init(NUM_LEDS, 18);
 pixelData = new Uint32Array(NUM_LEDS);
 
-// ---- trap the SIGINT and reset before exit
-// process.on('SIGINT', function () {
-//   ws281x.reset();
-//   process.nextTick(function () { process.exit(0); });
-// });
+---- trap the SIGINT and reset before exit
+process.on('SIGINT', function () {
+  ws281x.reset();
+  process.nextTick(function () { process.exit(0); });
+});
 
 
 // ---- animation-loop
@@ -16,14 +16,14 @@ var offset = 0;
 setInterval(function () {
   for (var i = 0; i < NUM_LEDS; i++) {
     pixelData[i] = colorwheel((offset + i) % 256);
-    console.log ("pixel data for : " + i);
-    console.log(pixelData[i]);
-    console.log(colorwheel((offset + i) % 256));
+    //console.log ("pixel data for : " + i);
+    //console.log(pixelData[i]);
+    //console.log(colorwheel((offset + i) % 256));
   }
 
   offset = (offset + 1) % 256;
- // ws281x.render(pixelData);
-  //console.log(pixelData);
+ ws281x.render(pixelData);
+  console.log(pixelData);
 }, 1000 / 30);
 
 console.log('Press <ctrl>+C to exit.');
