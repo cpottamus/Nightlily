@@ -12,7 +12,7 @@ var SerialPort = require("serialport");
 // Set up GPIO
 var gpio = require("rpi-gpio");
 var gpioPin = 16;
-gpio.setup(gpioPin, gpio.DIR_OUT, write);
+gpio.setup(gpioPin, gpio.DIR_OUT, toggleMist);
 
 
 //GLOBAL VARS
