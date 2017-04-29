@@ -148,8 +148,9 @@ function toggleMist() {
     }
 
     //Opens when declared, and stays open to write this. If behaving erratically, may need to close.
-    gpio.write(gpioPin, mistState, function() {      
-      //gpio.close(gpioPin);
+    gpio.write(gpioPin, mistState, function(err) {
+        if (err) throw err;
+        console.log('Written to pin');
     });
 }
 
@@ -341,6 +342,7 @@ function handleOSCMessage(msg) {
      /////////////////////////
       case '/mist/power':
         mistOn = msg.args[0].value;
+        console.log("Misting value from OSC:: " + mistOn);
         toggleMist();
         break;
     }
