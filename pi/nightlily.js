@@ -10,9 +10,9 @@ var ws281x = require('rpi-ws281x-native');
 var SerialPort = require("serialport");
 
 // Set up GPIO
-var gpio = require("pi-gpio");
+var gpio = require("rpi-gpio");
 var gpioPin = 16;
-gpio.open(gpioPin, "output");
+gpio.setup(gpioPin, gpio.DIR_OUT, write);
 
 
 //GLOBAL VARS
@@ -45,7 +45,7 @@ var offBuffer = new Buffer(10);
 
 //Mist Globals
 var mistOn = false;
-var mistState = 0;
+var mistState = false;
 /*
 //////////////////////////////////////////////////////
                   Motor Serial Port
@@ -139,11 +139,11 @@ function rgbToHex(r, g, b) {
 function toggleMist() {
     if(mistOn == true){
       console.log("Turning on mist machine");
-      mistState = 1;
+      mistState = true;
       mistOn = false;
     }else if(mistOn == false){
       console.log("Turning off mist machine");
-      mistState = 0;
+      mistState = false;
       mistOn = true;
     }
 
