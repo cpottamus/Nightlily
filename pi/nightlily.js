@@ -11,6 +11,7 @@ var SerialPort = require("serialport");
 
 // Set up GPIO
 var gpio = require("pi-gpio");
+var gpioPin = 16;
 gpio.open(gpioPin, "output");
 
 
@@ -44,7 +45,6 @@ var offBuffer = new Buffer(10);
 
 //Mist Globals
 var mistOn = false;
-var gpioPin = 16;
 var mistState = 0;
 /*
 //////////////////////////////////////////////////////

@@ -66,6 +66,15 @@ Message format:
 
 
 `args`
-just a value between 0 and 1
+just an integer value between 0 and 7420
 
-args: [ { type: 'float', value: 0.5852534770965576 } ]
+args: [ { type: 'integer', value: 4608 } ]
+
+Mist
+Desired Controls:
+	-On/Off
+
+Message format:
+	GPIO, sending 1 or 0.
+
+
