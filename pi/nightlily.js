@@ -10,9 +10,9 @@ var ws281x = require('rpi-ws281x-native');
 var SerialPort = require("serialport");
 
 // Set up GPIO
-var gpio = require("rpi-gpio");
+var gpio = require("rpio");
 var gpioPin = 16;
-gpio.setup(gpioPin, gpio.DIR_OUT, toggleMist);
+gpio.open(gpioPin, gpio.OUTPUT, gpio.LOW);
 
 
 //GLOBAL VARS
@@ -140,18 +140,15 @@ function toggleMist() {
     if(mistOn == true){
       console.log("Turning on mist machine");
       mistState = true;
+      gpio.write(gpioPin, gpio.HIGH);
       mistOn = false;
     }else if(mistOn == false){
       console.log("Turning off mist machine");
+      gpio.write(gpioPin, gpio.LOW);
       mistState = false;
       mistOn = true;
     }
 
-    //Opens when declared, and stays open to write this. If behaving erratically, may need to close.
-    gpio.write(gpioPin, mistState, function(err) {
-        if (err) throw err;
-        console.log('Written to pin');
-    });
 }
 
 /*
