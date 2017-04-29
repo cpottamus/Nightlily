@@ -145,7 +145,7 @@ function toggleMist() {
     }else if(mistOn == false){
       console.log("Turning off mist machine");
       gpio.write(gpioPin, gpio.LOW);
-      mistState = false;
+      mistState = false;  
       mistOn = true;
     }
 
