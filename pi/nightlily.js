@@ -11,7 +11,7 @@ var SerialPort = require("serialport");
 
 // Set up GPIO
 var gpio = require("rpio");
-var gpioPin = 13;
+var gpioPin = 16;
 gpio.open(gpioPin, gpio.OUTPUT, gpio.LOW);
 
 
