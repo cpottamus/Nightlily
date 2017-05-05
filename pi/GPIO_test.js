@@ -19,5 +19,5 @@ for (var i = 0; i < 5; i++) {
         /* Off for half a second (500ms) */
         rpio.write(12, rpio.LOW);
         console.log("sending low");
-        rpio.msleep(1);
+        rpio.sleep(1);
 }
