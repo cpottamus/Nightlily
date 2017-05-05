@@ -4,7 +4,7 @@ var rpio = require("rpio");
  * Set the initial state to low.  The state is set prior to the pin becoming
  * active, so is safe for devices which require a stable setup.
  */
-rpio.open(23, rpio.OUTPUT, rpio.LOW);
+rpio.open(12, rpio.OUTPUT, rpio.LOW);
 
 /*
  * The sleep functions block, but rarely in these simple programs does one care
