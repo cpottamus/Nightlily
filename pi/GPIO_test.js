@@ -14,10 +14,10 @@ for (var i = 0; i < 5; i++) {
         /* On for 1 second */
         rpio.write(12, rpio.HIGH);
         console.log("sending high");
-        rpio.sleep(5);
+        rpio.sleep(1);
 
         /* Off for half a second (500ms) */
         rpio.write(12, rpio.LOW);
         console.log("sending low");
-        rpio.msleep(500);
+        rpio.msleep(1);
 }
