@@ -12,7 +12,7 @@ var SerialPort = require("serialport");
 // Set up GPIO
 var rpio = require("rpio");
 var gpioPin = 12;
-rpio.open(12, rpio.OUTPUT, rpio.LOW);
+rpio.open(gpioPin, rpio.OUTPUT, rpio.LOW);
 
 
 //GLOBAL VARS
@@ -140,11 +140,11 @@ function toggleMist() {
     if(mistOn == true){
       console.log("Turning on mist machine");
       mistState = true;
-      rpio.write(12, rpio.HIGH);
+      rpio.write(gpioPin, rpio.HIGH);
       mistOn = false;
     }else if(mistOn == false){
       console.log("Turning off mist machine");
-      rpio.write(12, rpio.LOW);
+      rpio.write(gpioPin, rpio.LOW);
       mistState = false;  
       mistOn = true;
     }
