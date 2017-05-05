@@ -10,7 +10,7 @@ var ws281x = require('rpi-ws281x-native');
 var SerialPort = require("serialport");
 
 // Set up GPIO
-var gpio = require("rpio");
+var rpio = require("rpio");
 var gpioPin = 12;
 rpio.open(12, rpio.OUTPUT, rpio.LOW);
 
