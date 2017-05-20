@@ -31,7 +31,7 @@ void setup() {
   // Send ready signal.
   Serial.println(2000);     
 
- // Calibrate by hitting limit switch. 
+ // Calibrate by hitting limit switch.
  calibratePosition();
  
  stepper.setMaxSpeed(maximumSpeed);
@@ -43,8 +43,9 @@ void loop() {
 
 //If the switch is triggered at any point in the loop, establish current position as bloom + safety interval, and move back to bloom.
 if( digitalRead(limitSwitchPin) == LOW ) {
+  Serial.println(7100); //log Limit Switch triggered
   stepper.setCurrentPosition(fullBloom + limitSwitchSafetyInterval);
-  stepper.runToPosition(fullBloom);
+  stepper.runToNewPosition(fullBloom);
 } else {
  
   //Run motor
@@ -113,13 +114,15 @@ void parseAndMoveToInputLocation(String& input){
 }
 
 void calibratePosition() {
+  Serial.println(7000); //log calibration
   stepper.setMaxSpeed(500);
   stepper.moveTo(fullBloom + 500); //TEST WITH VALUE CLOSE TO FULL SIZE
   while( digitalRead(limitSwitchPin) != LOW ) {
     stepper.run();
   }
   stepper.setCurrentPosition(fullBloom + limitSwitchSafetyInterval);
-  stepper.runToPosition(0);
+  stepper.runToNewPosition(0);
+  Serial.println(7002); //Calibration complete
 }
 
 
