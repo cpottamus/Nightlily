@@ -4,7 +4,7 @@ var NUM_LEDS = 12
 ws281x.init(NUM_LEDS, 18);
 pixelData = new Uint32Array(NUM_LEDS);
 
----- trap the SIGINT and reset before exit
+// ---- trap the SIGINT and reset before exit
 process.on('SIGINT', function () {
   ws281x.reset();
   process.nextTick(function () { process.exit(0); });
