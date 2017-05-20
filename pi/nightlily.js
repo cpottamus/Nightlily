@@ -10,9 +10,9 @@ var ws281x = require('rpi-ws281x-native');
 var SerialPort = require("serialport");
 
 // Set up GPIO
-var gpio = require("rpio");
+var rpio = require("rpio");
 var gpioPin = 32;
-gpio.open(gpioPin, gpio.OUTPUT, gpio.LOW);
+rpio.open(gpioPin, gpio.OUTPUT, gpio.LOW);
 
 //GLOBAL VARS
 //Light vars
