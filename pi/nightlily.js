@@ -75,6 +75,13 @@ motorPort.on("data", function(data) {
   }else if (data == 4000 && arduinoBooted == true) {
     console.log('Pi received request for location');
     locationRequested = true;
+  }else if (data == 7000) {
+    console.log('Motor Arduino calibrating position');
+  }else if (data == 7002) {
+    console.log('Motor Arduino calibration complete');
+  }
+  else if (data == 7100) {
+    console.log('Motor Arduino limit switch triggered');
   }
 });
 

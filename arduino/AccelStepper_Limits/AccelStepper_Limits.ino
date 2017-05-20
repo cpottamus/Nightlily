@@ -8,14 +8,19 @@ int bottomLimitPin = 3;         //set pin for bottom limit switch
 
 int feet = 1524;                //define number of steps per 1' increase in bloom
 int fullBloom =   7420;         //define full bloom position
+int limitSwitchSafetyInterval = 200;
 int bloomTarget = 0;            //set initial bloom target position
 int maxAcceleration = 1500;
 int maximumSpeed = 4000;
+int limitSwitchPin = 4;
 String inputString = "";
 boolean inputComplete = false;
 boolean sentLocationRequest = false;
 
 void setup() {
+
+  //Set our limit switch
+  pinMode(limitSwitchPin, INPUT_PULLUP);
 
   //Testing serial setup
   Serial.begin(115200);
@@ -24,41 +29,32 @@ void setup() {
   }
   delay(2000);
   // Send ready signal.
-  Serial.println(2000);
-  
-  stepper.setMaxSpeed(maximumSpeed);
-  stepper.setAcceleration(maxAcceleration);
-       
+  Serial.println(2000);     
 
- // This will be the limit switch in the future (calibrate by running until it hits)
- stepper.setCurrentPosition(0);
-
- //Calibrate by running back until it hits the top switch, then setCurrentPosition to 0.
-
-/*
-  attachInterrupt(digitalPinToInterrupt(topLimitPin), setTopLimit, CHANGE);      //interrupt & recalibrate when the top limit is hit
-  attachInterrupt(digitalPinToInterrupt(bottomLimitPin), setBottomLimit, CHANGE);   //interrupt & recalibrate bottom limit is hit
-
-  stepper.runToNewPosition(fullBloom*1.5);    //run the stepper out until you hit the limit
-  delay(1000);
-  stepper.runToNewPosition(0);    //return the stepper to fully retracted
-  delay(1000);
-*/
+ // Calibrate by hitting limit switch. 
+ calibratePosition();
+ 
+ stepper.setMaxSpeed(maximumSpeed);
+ stepper.setAcceleration(maxAcceleration);
+ //stepper.setCurrentPosition(0);
 } 
 
 void loop() {
 
-//If the Bottom switch GPIO is not triggered, then run and check distance.
-//If it is triggered, then run to 0. 
-//If top switch GPIO is triggered then set current position as 0, otherwise execute normal motor function
-
-//Run motor
-stepper.run();
+//If the switch is triggered at any point in the loop, establish current position as bloom + safety interval, and move back to bloom.
+if( digitalRead(limitSwitchPin) == LOW ) {
+  stepper.setCurrentPosition(fullBloom + limitSwitchSafetyInterval);
+  stepper.runToPosition(fullBloom);
+} else {
+ 
+  //Run motor
+  stepper.run();
 
   //If we've reached our position, read the serial input.
   if(stepper.distanceToGo() == 0) {
     getSerialInput();
-  }
+  } 
+}
 }
 
 
@@ -88,6 +84,8 @@ void parseAndMoveToInputLocation(String& input){
 
    //Truncates on first non-numeric, gets position, sets target.
    int newPosition = input.toFloat();
+   if (newPosition > fullBloom) { newPosition = fullBloom; }
+   if (newPosition < 0) { newPosition = 0; }
    stepper.moveTo(newPosition);
    
    //If speed included, substrings after s and truncates again.
@@ -112,6 +110,16 @@ void parseAndMoveToInputLocation(String& input){
   //Clear state
   inputString = "";
   inputComplete = false;
+}
+
+void calibratePosition() {
+  stepper.setMaxSpeed(500);
+  stepper.moveTo(fullBloom + 500); //TEST WITH VALUE CLOSE TO FULL SIZE
+  while( digitalRead(limitSwitchPin) != LOW ) {
+    stepper.run();
+  }
+  stepper.setCurrentPosition(fullBloom + limitSwitchSafetyInterval);
+  stepper.runToPosition(0);
 }
 
 
