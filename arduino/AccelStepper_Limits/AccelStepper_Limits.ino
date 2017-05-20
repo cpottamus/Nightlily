@@ -33,6 +33,8 @@ void setup() {
  // This will be the limit switch in the future (calibrate by running until it hits)
  stepper.setCurrentPosition(0);
 
+ //Calibrate by running back until it hits the top switch, then setCurrentPosition to 0.
+
 /*
   attachInterrupt(digitalPinToInterrupt(topLimitPin), setTopLimit, CHANGE);      //interrupt & recalibrate when the top limit is hit
   attachInterrupt(digitalPinToInterrupt(bottomLimitPin), setBottomLimit, CHANGE);   //interrupt & recalibrate bottom limit is hit
@@ -45,6 +47,11 @@ void setup() {
 } 
 
 void loop() {
+
+//If the Bottom switch GPIO is not triggered, then run and check distance.
+//If it is triggered, then run to 0. 
+//If top switch GPIO is triggered then set current position as 0, otherwise execute normal motor function
+
 //Run motor
 stepper.run();
 

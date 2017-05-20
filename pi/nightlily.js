@@ -11,7 +11,7 @@ var SerialPort = require("serialport");
 
 // Set up GPIO
 var gpio = require("rpio");
-var gpioPin = 23;
+var gpioPin = 32;
 gpio.open(gpioPin, gpio.OUTPUT, gpio.LOW);
 
 
@@ -252,7 +252,7 @@ function handleOSCMessage(msg) {
         ws281x.render(pixelData);
         break;
       case '/light/petal/color/1':
-        pixelData[0] = rgb2Int(msg.args[0].value, msg.args[1].value, msg.args[2].value);
+        pixelData[0] = rgbToHex(msg.args[0].value, msg.args[1].value, msg.args[2].value);
         console.log("The petal-1-color from vezer is :: " + pixelData[0] + ". In RGB :: " + msg.args[0].value + ", " + msg.args[1].value + ", " + msg.args[2].value );
         console.log(pixelData);
         ws281x.render(pixelData);
