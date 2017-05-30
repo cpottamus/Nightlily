@@ -8,7 +8,7 @@ int bottomLimitPin = 3;         //set pin for bottom limit switch
 
 int feet = 1524;                //define number of steps per 1' increase in bloom
 int limitSwitchSafetyInterval = 200;
-int fullBloom =   7420 - limitSwitchSafetyInterval; //define full bloom position
+int fullBloom =   6800 - limitSwitchSafetyInterval; //define full bloom position
 int bloomTarget = 0;            //set initial bloom target position
 int maxAcceleration = 1500;
 int maximumSpeed = 4000;
