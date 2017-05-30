@@ -33,10 +33,6 @@ void setup() {
 
  // Calibrate by hitting limit switch.
  calibratePosition();
- 
- stepper.setMaxSpeed(maximumSpeed);
- stepper.setAcceleration(maxAcceleration);
- //stepper.setCurrentPosition(0);
 } 
 
 void loop() {
@@ -121,6 +117,8 @@ void calibratePosition() {
     stepper.run();
   }
   stepper.setCurrentPosition(fullBloom + limitSwitchSafetyInterval);
+  stepper.setMaxSpeed(maximumSpeed);
+  stepper.setAcceleration(maxAcceleration);
   stepper.runToNewPosition(0);
   Serial.println(7002); //Calibration complete
 }
