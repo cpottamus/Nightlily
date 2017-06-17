@@ -7,11 +7,11 @@ int topLimitPin = 2;            //set pin for top limit switch
 int bottomLimitPin = 3;         //set pin for bottom limit switch
 
 int feet = 1524;                //define number of steps per 1' increase in bloom
-int limitSwitchSafetyInterval = 200;
-int fullBloom =   6800 - limitSwitchSafetyInterval; //define full bloom position
+int limitSwitchSafetyInterval = 25;
+int fullBloom =   6600; //define full bloom position
 int bloomTarget = 0;            //set initial bloom target position
 int maxAcceleration = 1500;
-int maximumSpeed = 4000;
+int maximumSpeed = 2000;
 int limitSwitchPin = 4;
 String inputString = "";
 boolean inputComplete = false;
@@ -112,13 +112,12 @@ void parseAndMoveToInputLocation(String& input){
 void calibratePosition() {
   Serial.println(7000); //log calibration
   stepper.moveTo(fullBloom + 500); //TEST WITH VALUE CLOSE TO FULL SIZE
-  stepper.setSpeed(1500);
+  stepper.setMaxSpeed(maximumSpeed);
+  stepper.setAcceleration(maxAcceleration);
   while( digitalRead(limitSwitchPin) != LOW ) {
     stepper.run();
   }
   stepper.setCurrentPosition(fullBloom + limitSwitchSafetyInterval);
-  stepper.setMaxSpeed(maximumSpeed);
-  stepper.setAcceleration(maxAcceleration);
   stepper.runToNewPosition(0);
   Serial.println(7002); //Calibration complete
 }

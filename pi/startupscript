@@ -1,0 +1,16 @@
+#! /bin/sh
+# Add the script at the path below (/etc/init.d), that will make it execute at startup
+# /etc/init.d/startupscript
+
+# After you've added the script, give it root permission by running:
+# chmod 755 startupscript
+
+# Lastly, build the symbolic link
+# Run: update-rc.d startupscript default
+
+# do something like running your node.js server or client!
+cd ~/Nightlily/pi
+#if Sudo doesn't work here, then remove and try again after calling CHMOD 755 on the file in question
+sudo node nightlily.js
+
+exit 0
