@@ -72,18 +72,18 @@ motorPort.on("data", function(data) {
   //console.log('Motor-Arduino sent to Pi:' + data);
   var dataTemp = data
   if ( data == 2000) {
-    console.log(getDateTime() + 'Pi received ready signal, Motor Arduino Ready');
+    console.log(getDateTime() + ' Pi received ready signal, Motor Arduino Ready');
     arduinoBooted = true;
   }else if (data == 4000 && arduinoBooted == true) {
-    console.log(getDateTime() + 'Pi received request for location');
+    console.log(getDateTime() + ' Pi received request for location');
     locationRequested = true;
   }else if (data == 7000) {
-    console.log(getDateTime() + 'Motor Arduino calibrating position');
+    console.log(getDateTime() + ' Motor Arduino calibrating position');
   }else if (data == 7002) {
-    console.log(getDateTime() + 'Motor Arduino calibration complete');
+    console.log(getDateTime() + ' Motor Arduino calibration complete');
   }
   else if (data == 7100) {
-    console.log(getDateTime() + 'Motor Arduino limit switch triggered');
+    console.log(getDateTime() + ' Motor Arduino limit switch triggered');
   }
 });
 
@@ -146,12 +146,12 @@ function rgbToHex(r, g, b) {
 //Checks the OSC value for Mist and sends a high/low GPIO accordingly.
 function toggleMist() {
     if(mistOn == true){
-      console.log(getDateTime() + "Turning on mist machine");
+      console.log(getDateTime() + " Turning on mist machine");
       mistState = true;
       rpio.write(gpioPin, rpio.HIGH);
       mistOn = false;
     }else if(mistOn == false){
-      console.log(getDateTime() + "Turning off mist machine");
+      console.log(getDateTime() + " Turning off mist machine");
       rpio.write(gpioPin, rpio.LOW);
       mistState = false;  
       mistOn = true;
@@ -171,7 +171,7 @@ var projectorPort1 = new SerialPort("/dev/ttyUSB0", {
 });
 
 projectorPort1.on("open", function () {
-  console.log('Projector 1 port open');
+  console.log(getDateTime() + ' Projector 1 port open');
 });
 
 var projectorPort2 = new SerialPort("/dev/ttyUSB1", {
@@ -179,7 +179,7 @@ var projectorPort2 = new SerialPort("/dev/ttyUSB1", {
 });
 
 projectorPort2.on("open", function () {
-  console.log('Projector 2 port open');
+  console.log(getDateTime() + ' Projector 2 port open');
 });
 
 
@@ -198,11 +198,11 @@ projectorPort2.on("data", function(data) {
 //Assigns the proper hex buffer to powerSignal and then writes to both projectors.
 function toggleProjectorPower() {
     if(projectorsOn == true){
-      console.log(now.toString() + "Turning on projectors");
+      console.log(getDateTime() + " Turning on projectors");
       var powerSignal = onBuffer;
       projectorsOn = false;
     }else if(projectorsOn == false){
-      console.log(now.toString() + "Turning off projectors");
+      console.log(getDateTime() + " Turning off projectors");
       var powerSignal = offBuffer;     
       projectorsOn = true;
     }
@@ -347,7 +347,7 @@ function handleOSCMessage(msg) {
      /////////////////////////
       case '/mist/power':
         mistOn = msg.args[0].value;
-        console.log("Misting value from OSC:: " + mistOn);
+        console.log(getDateTime() + " Misting value from OSC:: " + mistOn);
         toggleMist();
         break;
     }
