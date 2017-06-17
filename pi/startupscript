@@ -9,7 +9,7 @@
 # Run: update-rc.d startupscript default
 
 # do something like running your node.js server or client!
-cd /Nightlily/pi
+cd ~/Nightlily/pi
 #if Sudo doesn't work here, then remove and try again after calling CHMOD 755 on the file in question
 sudo node nightlily.js
 
