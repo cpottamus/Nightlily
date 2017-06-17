@@ -1,3 +1,7 @@
+var time = require('time');
+var now = new time.Date();
+now.setTimezone("America/New_York");
+
 // Set up OSC
 var osc = require('osc-min'),
     dgram = require('dgram'),
@@ -70,18 +74,18 @@ motorPort.on("data", function(data) {
   //console.log('Motor-Arduino sent to Pi:' + data);
   var dataTemp = data
   if ( data == 2000) {
-    console.log('Pi received ready signal, Motor Arduino Ready');
+    console.log(now.toString() + 'Pi received ready signal, Motor Arduino Ready');
     arduinoBooted = true;
   }else if (data == 4000 && arduinoBooted == true) {
-    console.log('Pi received request for location');
+    console.log(now.toString() + 'Pi received request for location');
     locationRequested = true;
   }else if (data == 7000) {
-    console.log('Motor Arduino calibrating position');
+    console.log(now.toString() + 'Motor Arduino calibrating position');
   }else if (data == 7002) {
-    console.log('Motor Arduino calibration complete');
+    console.log(now.toString() + 'Motor Arduino calibration complete');
   }
   else if (data == 7100) {
-    console.log('Motor Arduino limit switch triggered');
+    console.log(now.toString() + 'Motor Arduino limit switch triggered');
   }
 });
 
@@ -144,12 +148,12 @@ function rgbToHex(r, g, b) {
 //Checks the OSC value for Mist and sends a high/low GPIO accordingly.
 function toggleMist() {
     if(mistOn == true){
-      console.log("Turning on mist machine");
+      console.log(now.toString() + "Turning on mist machine");
       mistState = true;
       rpio.write(gpioPin, rpio.HIGH);
       mistOn = false;
     }else if(mistOn == false){
-      console.log("Turning off mist machine");
+      console.log(now.toString() + "Turning off mist machine");
       rpio.write(gpioPin, rpio.LOW);
       mistState = false;  
       mistOn = true;
@@ -196,11 +200,11 @@ projectorPort2.on("data", function(data) {
 //Assigns the proper hex buffer to powerSignal and then writes to both projectors.
 function toggleProjectorPower() {
     if(projectorsOn == true){
-      console.log("Turning on projectors");
+      console.log(now.toString() + "Turning on projectors");
       var powerSignal = onBuffer;
       projectorsOn = false;
     }else if(projectorsOn == false){
-      console.log("Turning off projectors");
+      console.log(now.toString() + "Turning off projectors");
       var powerSignal = offBuffer;     
       projectorsOn = true;
     }
