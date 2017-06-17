@@ -1,6 +1,4 @@
 var time = require('time');
-var now = new time.Date();
-now.setTimezone("America/New_York");
 
 // Set up OSC
 var osc = require('osc-min'),
@@ -74,18 +72,18 @@ motorPort.on("data", function(data) {
   //console.log('Motor-Arduino sent to Pi:' + data);
   var dataTemp = data
   if ( data == 2000) {
-    console.log(now.toString() + 'Pi received ready signal, Motor Arduino Ready');
+    console.log(getDateTime() + 'Pi received ready signal, Motor Arduino Ready');
     arduinoBooted = true;
   }else if (data == 4000 && arduinoBooted == true) {
-    console.log(now.toString() + 'Pi received request for location');
+    console.log(getDateTime() + 'Pi received request for location');
     locationRequested = true;
   }else if (data == 7000) {
-    console.log(now.toString() + 'Motor Arduino calibrating position');
+    console.log(getDateTime() + 'Motor Arduino calibrating position');
   }else if (data == 7002) {
-    console.log(now.toString() + 'Motor Arduino calibration complete');
+    console.log(getDateTime() + 'Motor Arduino calibration complete');
   }
   else if (data == 7100) {
-    console.log(now.toString() + 'Motor Arduino limit switch triggered');
+    console.log(getDateTime() + 'Motor Arduino limit switch triggered');
   }
 });
 
@@ -148,12 +146,12 @@ function rgbToHex(r, g, b) {
 //Checks the OSC value for Mist and sends a high/low GPIO accordingly.
 function toggleMist() {
     if(mistOn == true){
-      console.log(now.toString() + "Turning on mist machine");
+      console.log(getDateTime() + "Turning on mist machine");
       mistState = true;
       rpio.write(gpioPin, rpio.HIGH);
       mistOn = false;
     }else if(mistOn == false){
-      console.log(now.toString() + "Turning off mist machine");
+      console.log(getDateTime() + "Turning off mist machine");
       rpio.write(gpioPin, rpio.LOW);
       mistState = false;  
       mistOn = true;
@@ -371,3 +369,32 @@ var udp = dgram.createSocket('udp4', function(msg, rinfo) {
 
 udp.bind(9998);
 console.log('Listening for OSC messages on port 9998');
+
+
+// UTIL FUNCTIONS
+
+function getDateTime() {
+
+    var date = new time.Date();
+    date.setTimezone("America/New_York");
+
+    var hour = date.getHours();
+    hour = (hour < 10 ? "0" : "") + hour;
+
+    var min  = date.getMinutes();
+    min = (min < 10 ? "0" : "") + min;
+
+    var sec  = date.getSeconds();
+    sec = (sec < 10 ? "0" : "") + sec;
+
+    var year = date.getFullYear();
+
+    var month = date.getMonth() + 1;
+    month = (month < 10 ? "0" : "") + month;
+
+    var day  = date.getDate();
+    day = (day < 10 ? "0" : "") + day;
+
+    return year + ":" + month + ":" + day + ":" + hour + ":" + min + ":" + sec;
+
+}
