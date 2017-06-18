@@ -38,9 +38,9 @@ void setup() {
 void loop() {
 
 //If the switch is triggered at any point in the loop, establish current position as bloom + safety interval, and move back to bloom.
-if( digitalRead(limitSwitchPin) == LOW ) {
+if( (digitalRead(limitSwitchPin) == LOW) && (stepper.currentPosition() >= (fullBloom-100)) ) {
   Serial.println(7100); //log Limit Switch triggered
-  stepper.setCurrentPosition(fullBloom + limitSwitchSafetyInterval);
+  //stepper.setCurrentPosition(fullBloom + limitSwitchSafetyInterval);
   stepper.runToNewPosition(fullBloom);
 } else {
  
@@ -114,8 +114,12 @@ void calibratePosition() {
   stepper.moveTo(fullBloom + 500); //TEST WITH VALUE CLOSE TO FULL SIZE
   stepper.setMaxSpeed(maximumSpeed);
   stepper.setAcceleration(maxAcceleration);
-  while( digitalRead(limitSwitchPin) != LOW ) {
+  LOOP:while( digitalRead(limitSwitchPin) != LOW ) {
     stepper.run();
+  }
+  delay(200)
+  if (digitalRead(limitSwitchPin) != LOW ) {
+    goto LOOP;
   }
   stepper.setCurrentPosition(fullBloom + limitSwitchSafetyInterval);
   stepper.runToNewPosition(0);
