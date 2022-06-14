@@ -50,6 +50,11 @@ rpio.open(gpioPin, rpio.OUTPUT, rpio.LOW);
 //Mist Globals
 var mistOn = false;
 var mistState = false;
+
+//Startup Log
+console.log('Running nightlily_mist-only...');
+
+
 /*
 //////////////////////////////////////////////////////
                   Motor Serial Port
