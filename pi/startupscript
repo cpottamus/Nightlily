@@ -21,6 +21,6 @@
 # do something like running your node.js server or client!
 cd /home/pi/Nightlily/pi
 #if Sudo doesn't work here, then remove and try again after calling CHMOD 755 on the file in question
-sudo node nightlily_mist-only.js
+sudo node nightlily_mist-only.js > nightlily_logs.txt 2>&1
 
 exit 0
