@@ -1,4 +1,4 @@
-var time = require('time');
+//var time = require('time');
 
 // Set up OSC
 var osc = require('osc-min'),
@@ -389,6 +389,7 @@ console.log('Listening for OSC messages on port 9998');
 
 // UTIL FUNCTIONS
 
+/*
 function getDateTime() {
 
     var date = new time.Date();
@@ -412,5 +413,31 @@ function getDateTime() {
     day = (day < 10 ? "0" : "") + day;
 
     return year + ":" + month + ":" + day + ":" + hour + ":" + min + ":" + sec;
+
+}
+*/
+
+function getDateTime() {
+
+    let date_ob = new Date();
+    
+    let date = ("0" + date_ob.getDate()).slice(-2);
+
+    // current month
+    let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+
+    // current year
+    let year = date_ob.getFullYear();
+
+    // current hours
+    let hours = date_ob.getHours();
+
+    // current minutes
+    let minutes = date_ob.getMinutes();
+
+    // current seconds
+    let seconds = date_ob.getSeconds();
+
+    return year + ":" + month + ":" + date + ":" + hour + ":" + min + ":" + sec;
 
 }
