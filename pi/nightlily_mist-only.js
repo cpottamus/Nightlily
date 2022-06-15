@@ -408,6 +408,6 @@ function getDateTime() {
     // current seconds
     var sec = date_ob.getSeconds();
 
-    return year + ":" + month + ":" + date + " | " + hour + ":" + min + ":" + sec;
+    return year + ":" + month + ":" + date + " " + hour + ":" + min + ":" + sec + " | ";
 
 }
