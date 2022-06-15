@@ -3,18 +3,6 @@ var osc = require('osc-min'),
     dgram = require('dgram'),
     remote;
 
-// Save console logs to file
-// get the Console class
-const { Console } = require("console");
-// get fs module for creating write streams
-const fs = require("fs");
-
-// make a new logger
-const myLogger = new Console({
-  stdout: fs.createWriteStream("nightlily_logs.txt"),
-  stderr: fs.createWriteStream("nightlily_errors.txt"),
-});
-
 /*  REMOVE UNNECESSARY COMPONENTS FOR MIST
 // Set up lights
 var ws281x = require('rpi-ws281x-native');
