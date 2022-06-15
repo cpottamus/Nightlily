@@ -430,13 +430,13 @@ function getDateTime() {
     var year = date_ob.getFullYear();
 
     // current hours
-    var hours = date_ob.getHours();
+    var hour = date_ob.getHours();
 
     // current minutes
-    var minutes = date_ob.getMinutes();
+    var min = date_ob.getMinutes();
 
     // current seconds
-    var seconds = date_ob.getSeconds();
+    var sec = date_ob.getSeconds();
 
     return year + ":" + month + ":" + date + ":" + hour + ":" + min + ":" + sec;
 
