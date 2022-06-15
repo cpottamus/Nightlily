@@ -1,5 +1,3 @@
-//var time = require('time');
-
 // Set up OSC
 var osc = require('osc-min'),
     dgram = require('dgram'),
@@ -389,34 +387,6 @@ console.log('Listening for OSC messages on port 9998');
 
 // UTIL FUNCTIONS
 
-/*
-function getDateTime() {
-
-    var date = new time.Date();
-    date.setTimezone("America/New_York");
-
-    var hour = date.getHours();
-    hour = (hour < 10 ? "0" : "") + hour;
-
-    var min  = date.getMinutes();
-    min = (min < 10 ? "0" : "") + min;
-
-    var sec  = date.getSeconds();
-    sec = (sec < 10 ? "0" : "") + sec;
-
-    var year = date.getFullYear();
-
-    var month = date.getMonth() + 1;
-    month = (month < 10 ? "0" : "") + month;
-
-    var day  = date.getDate();
-    day = (day < 10 ? "0" : "") + day;
-
-    return year + ":" + month + ":" + day + ":" + hour + ":" + min + ":" + sec;
-
-}
-*/
-
 function getDateTime() {
 
     let date_ob = new Date();
@@ -438,6 +408,6 @@ function getDateTime() {
     // current seconds
     var sec = date_ob.getSeconds();
 
-    return year + ":" + month + ":" + date + ":" + hour + ":" + min + ":" + sec;
+    return year + ":" + month + ":" + date + " | " + hour + ":" + min + ":" + sec;
 
 }
