@@ -1,4 +1,14 @@
 #! /bin/sh
+### BEGIN INIT INFO
+# Provides:         startupscript
+# Required-Start:       $local_fs $network $remote_fs $syslog
+# Required-Stop:        $local_fs $network $remote_fs $syslog
+# Default-Start:        2 3 4 5
+# Default-Stop:         0 1 6
+# Short-Description:    startupscript runs nightlily_mist-only.js on boot
+# Description:      startupscript runs nightlily_mist-only.js on boot
+### END INIT INFO
+
 # Add the script at the path below (/etc/init.d), that will make it execute at startup
 # /etc/init.d/startupscript
 
@@ -6,11 +16,11 @@
 # chmod 755 startupscript
 
 # Lastly, build the symbolic link
-# Run: update-rc.d startupscript default
+# Run: update-rc.d startupscript defaults
 
 # do something like running your node.js server or client!
-cd ~/Nightlily/pi
+cd /home/pi/Nightlily/pi
 #if Sudo doesn't work here, then remove and try again after calling CHMOD 755 on the file in question
-sudo node nightlily.js
+sudo node nightlily_mist-only.js
 
 exit 0
