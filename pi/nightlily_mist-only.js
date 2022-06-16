@@ -41,7 +41,7 @@ var offBuffer = new Buffer(10);
 
 // Set up GPIO
 var rpio = require("rpio");
-var gpioPin = 29;
+var gpioPin = 15;
 rpio.open(gpioPin, rpio.OUTPUT, rpio.LOW);
 
 
